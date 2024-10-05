@@ -36,3 +36,40 @@ body, html {
   padding: 0;
 }
 
+.hero-section {
+  padding: 100px 0;
+  background-color: #f8f9fa;
+}
+
+.hero-section .text-container {
+  max-width: 550px;
+  margin: 0 auto;  /* Centre le texte horizontalement */
+}
+
+.hero-section h1 {
+  font-size: 50px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.hero-section p {
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+  color: #555;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.hero-section .btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.hero-section .btn-outline-dark {
+  border: 2px solid black;
+}

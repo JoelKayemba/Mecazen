@@ -6,7 +6,7 @@ import '../../App.css'
 
 const Header = () => {
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" className="mb-4" style={{ zIndex: 10, position: 'relative' }}>
+    <Navbar bg="dark" variant="dark" expand="lg" className="mb-4" >
       <Container>
        
         <Navbar.Brand as={Link} to="/">
@@ -24,8 +24,10 @@ const Header = () => {
          
           <Nav className="mx-auto">
             <Nav.Link as={Link} to="/">Accueil</Nav.Link>
+            <Nav.Link as={Link} to="/services">Services</Nav.Link>
             <Nav.Link as={Link} to="/A_propos">À propos</Nav.Link>
             <Nav.Link as={Link} to="/contact">Contact</Nav.Link>
+            <Nav.Link as={Link} to="/FAQ">FAQ</Nav.Link>
           </Nav>
           {/* Boutons Connexion et Inscription à droite */}
           <Nav className="ms-lg-auto mt-2 mt-lg-0 d-flex align-items-center">

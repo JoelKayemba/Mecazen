@@ -11,6 +11,8 @@ import MecanicienDashboard from './components/Dashboard/MecanicienDashboard';
 import TableauDeBord from './components/Dashboard/TableauDeBord';
 import Authentification from './components/Authentification/Authentification';
 import Inscription from './components/Authentification/Inscription';
+import Services from './pages/Services';
+import FAQ from './pages/FAQ';
 import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
@@ -19,11 +21,13 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Accueil />} />
+          <Route path="/services" element={<Services />} />
           <Route path="/A_propos" element={<Apropos />} />
           <Route path="/contact" element={<Contact/>} />
           <Route path="/login" element={<Authentification />} />
           <Route path="/inscription" element={<Inscription />} />
           <Route path="/tableau_de_Bord" element={<TableauDeBord />} />
+          <Route path="/FAQ" element={<FAQ />} />
 
           {/* Routes protégées par authentification */}
           <Route path="/client-dashboard" element={<ClientDashboard />} />

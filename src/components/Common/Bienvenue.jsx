@@ -7,20 +7,20 @@ import '../../App.css';
 
 function Bienvenue() {
   return (
-    <Carousel fade interval={3000} className="carousel-container m-0" style={{ position: 'absolute', top: 0, width: '100%' }}>
+    <Carousel fade interval={3000} className="carousel-container m-0" >
       {/* Slide 1 */}
       <Carousel.Item>
         <div
           className="d-block w-100 carousel-slide"
           style={{
             backgroundImage: `url(${image1})`,
-            height: '750px',
+            height: '725px',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
         >
           <Carousel.Caption>
-            <h3>Bienvenue chez MecaZen</h3>
+            <h3>Reservation en un clic</h3>
             <p>Réservez facilement vos rendez-vous de réparation automobile en ligne.</p>
           </Carousel.Caption>
         </div>
@@ -32,7 +32,7 @@ function Bienvenue() {
           className="d-block w-100 carousel-slide"
           style={{
             backgroundImage: `url(${image2})`,
-            height: '750px',
+            height: '725px',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
@@ -50,7 +50,7 @@ function Bienvenue() {
           className="d-block w-100 carousel-slide"
           style={{
             backgroundImage: `url(${image3})`,
-            height: '750px',
+            height: '725px',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
