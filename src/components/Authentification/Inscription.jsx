@@ -6,4 +6,4 @@ function Inscription() {
   )
 }
 
-export default Inscription
+export default Inscription;
