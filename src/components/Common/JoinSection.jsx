@@ -29,7 +29,6 @@ const JoinSection = () => {
   );
 };
 
-// Styles en JS (ou tu peux les déplacer dans un fichier CSS)
 const styles = {
   section: {
     padding: '60px 0',

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import logo from '../../assets/log.jpg'
+import logo from '../../assets/MZ.png'
 import '../../App.css'
 
 const Header = () => {
@@ -13,8 +13,8 @@ const Header = () => {
           <img
             src={logo}
             alt="Logo"
-            width="70"
-            height="70"
+            width="80px"
+            height="80px"
             className="d-inline-block align-top"
           />{' '}
          
