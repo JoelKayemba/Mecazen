@@ -1,0 +1,1 @@
+// Page générique du tableau de bord (utilisée pour clients et mécaniciens)
