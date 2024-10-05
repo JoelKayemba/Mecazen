@@ -15,6 +15,7 @@ import Services from './pages/Services';
 import FAQ from './pages/FAQ';
 import NotFoundPage from './pages/NotFoundPage';
 
+
 function App() {
   return (
     <Provider store={store}>
@@ -28,6 +29,7 @@ function App() {
           <Route path="/inscription" element={<Inscription />} />
           <Route path="/tableau_de_Bord" element={<TableauDeBord />} />
           <Route path="/FAQ" element={<FAQ />} />
+          
 
           {/* Routes protégées par authentification */}
           <Route path="/client-dashboard" element={<ClientDashboard />} />

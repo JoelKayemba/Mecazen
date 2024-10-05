@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect } from 'react';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { Container } from 'react-bootstrap';
+import { Container , Spinner , Alert} from 'react-bootstrap';
+import { useDispatch , useSelector  } from 'react-redux';
+import { inscriptionUser } from '../../redux/Actions/InscriptionAction';
+import { useNavigate } from 'react-router-dom';
 
 function Inscription() {
   const [formData, setFormData] = useState({
@@ -11,6 +14,18 @@ function Inscription() {
     password: '',
     confirmPassword: '',
   });
+
+  const [confirmPassword, setConfirmPassword]= useState(false);
+
+  const { loading, error, user } = useSelector((state) => state.inscription);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate('/client-dashboard');  
+    }
+  }, [user, navigate]);
 
   const handleChange = (e) => {
     setFormData({
@@ -21,13 +36,31 @@ function Inscription() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Formulaire soumis', formData);
+    if (formData.password !== formData.confirmPassword) {
+      setConfirmPassword(true);
+    }
+
+    const userData={
+      firstName: formData.name,
+      email: formData.email,
+      password: formData.password
+    };
+
+    dispatch(inscriptionUser(userData));
   };
 
   return (
     <Container style={styles.container}>
       <h2 style={styles.title}>Créer un compte</h2>
       <p style={styles.subtitle}>Inscrivez-vous pour commencer à utiliser notre service</p>
+
+
+      {/* Message de succès */}
+      {user && <Alert variant="success">Inscription réussie !</Alert>}
+
+      {/* Message d'erreur */}
+      {error && <Alert variant="danger">{error}</Alert>}
+
 
       <Form onSubmit={handleSubmit}>
         <FloatingLabel controlId="floatingName" label="Nom complet" className="mb-3">
@@ -72,10 +105,11 @@ function Inscription() {
             onChange={handleChange} 
             required 
           />
+          {confirmPassword && (<p style={{color:'red', fontSize:'12px'}}>Le mot de passe ne correspond pas</p>)}
         </FloatingLabel>
 
         <Button variant="dark" type="submit" style={styles.button}>
-          S'inscrire
+          {loading ? <Spinner animation="border" size="sm" /> : 'Inscription'}
         </Button>
       </Form>
 

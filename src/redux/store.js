@@ -5,6 +5,7 @@ import vehiculeReducer from './Reducers/vehiculeReducer';
 import notificationReducer from './Reducers/notificationReducer';
 import paiementReducer from './Reducers/paiementReducer';
 import reparationReducer from './Reducers/reparationReducer';
+import InscriptionReducer from './Reducers/InscriptionReducer';
 
 
 
@@ -16,7 +17,8 @@ const store= configureStore (
             rendezVous: rendezVousReducer,
             notification: notificationReducer,
             paiement: paiementReducer,
-            reparation: reparationReducer
+            reparation: reparationReducer,
+            inscription: InscriptionReducer
         }
     }
 );
