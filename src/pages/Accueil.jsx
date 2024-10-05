@@ -6,6 +6,7 @@ import ReservationSection from '../components/Common/ReservationSection';
 import FeaturesSection from '../components/Common/FeaturesSections';
 import UsageSection from '../components/Common/UsageSection';
 import Footer from '../components/Common/Footer';
+import JoinSection from '../components/Common/JoinSection';
 
 function Accueil() {
   return (
@@ -16,6 +17,7 @@ function Accueil() {
       <ReservationSection/>
       <FeaturesSection/>
       <UsageSection/>
+      <JoinSection/>
       <Footer/>
       
     </div>
