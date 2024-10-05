@@ -19,7 +19,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Accueil />} />
-          <Route path="/apropos" element={<Apropos />} />
+          <Route path="/A_propos" element={<Apropos />} />
           <Route path="/contact" element={<Contact/>} />
           <Route path="/login" element={<Authentification />} />
           <Route path="/inscription" element={<Inscription />} />

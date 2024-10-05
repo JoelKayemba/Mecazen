@@ -2,10 +2,11 @@ import React from 'react';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import logo from '../../assets/log.jpg'
+import '../../App.css'
 
 const Header = () => {
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" className="mb-4">
+    <Navbar bg="dark" variant="dark" expand="lg" className="mb-4" style={{ zIndex: 10, position: 'relative' }}>
       <Container>
        
         <Navbar.Brand as={Link} to="/">
@@ -23,7 +24,7 @@ const Header = () => {
          
           <Nav className="mx-auto">
             <Nav.Link as={Link} to="/">Accueil</Nav.Link>
-            <Nav.Link as={Link} to="/apropos">À propos</Nav.Link>
+            <Nav.Link as={Link} to="/A_propos">À propos</Nav.Link>
             <Nav.Link as={Link} to="/contact">Contact</Nav.Link>
           </Nav>
           {/* Boutons Connexion et Inscription à droite */}
