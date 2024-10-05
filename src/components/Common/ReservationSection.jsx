@@ -8,7 +8,7 @@ const ReservationSection = () => {
     <section className="reservation-section" style={styles.section}>
       <Container>
         <Row className="align-items-center">
-          {/* Texte à gauche */}
+         
           <Col md={5}>
             <div style={styles.textContainer}>
               <h2 style={styles.title}>
@@ -32,7 +32,7 @@ const ReservationSection = () => {
             </div>
           </Col>
 
-          {/* Image à droite */}
+          
           <Col md={7} className="text-center">
             <img src={placeholder} alt="Placeholder" style={styles.image} />
           </Col>
