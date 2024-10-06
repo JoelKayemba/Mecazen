@@ -1,6 +1,7 @@
 import Footer from '../components/Common/Footer';
 import Header from '../components/Common/Header'
 import React, { useState } from 'react';
+import { Button } from 'react-bootstrap';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -64,7 +65,7 @@ const Contact = () => {
               required 
             ></textarea>
           </div>
-          <button type="submit">Envoyer</button>
+          <Button type="submit" variant='dark'>Envoyer</Button>
         </form>
       </div>
       <Footer />
