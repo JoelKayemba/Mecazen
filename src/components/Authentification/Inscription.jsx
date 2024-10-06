@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 function Inscription() {
   const [formData, setFormData] = useState({
-    name: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -23,7 +23,7 @@ function Inscription() {
 
   useEffect(() => {
     if (user) {
-      navigate('/client-dashboard');  
+      navigate('/');  
     }
   }, [user, navigate]);
 
@@ -38,10 +38,11 @@ function Inscription() {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
       setConfirmPassword(true);
+      return
     }
 
     const userData={
-      firstName: formData.name,
+      username: formData.username,
       email: formData.email,
       password: formData.password
     };
@@ -63,12 +64,12 @@ function Inscription() {
 
 
       <Form onSubmit={handleSubmit}>
-        <FloatingLabel controlId="floatingName" label="Nom complet" className="mb-3">
+        <FloatingLabel controlId="floatingName" label="Nom d'utilisateur" className="mb-3">
           <Form.Control 
             type="text" 
-            placeholder="John Doe" 
-            name="name" 
-            value={formData.name} 
+            placeholder="Nom d'utilisateur" 
+            name="username" 
+            value={formData.username} 
             onChange={handleChange} 
             required 
           />

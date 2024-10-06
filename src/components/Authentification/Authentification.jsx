@@ -1,45 +1,89 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { Container } from 'react-bootstrap';
+import { Container, Alert } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../../redux/Actions/AuthentificationAction';
+import { useNavigate } from 'react-router-dom';  
 
-function Authentification() {
+function Connexion() {
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+  });
+
+  const { loading, error, user } = useSelector((state) => state.auth);  // État de connexion
+  const dispatch = useDispatch();
+  const navigate = useNavigate();  
+
+  useEffect(() => {
+    if (user) {
+      // Si la connexion est réussie, redirection vers le tableau de bord
+      navigate('/');  
+    }
+  }, [user, navigate]);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const userData = {
+      // etant donne l'utilisation de l'API dummyJson il existe des utilisateur deja predefini pour la connexion
+      username: 'emilys',  
+      password: 'emilyspass',
+      
+    };
+    console.log('userData:', userData);
+
+    dispatch(loginUser(userData));  
+  };
+
   return (
     <Container style={styles.container}>
-      <h2 style={styles.title}>Connectez-vous à votre compte</h2>
-      <p style={styles.subtitle}>Veuillez entrer vos informations pour accéder à votre compte</p>
+      <h2 style={styles.title}>Connexion</h2>
+      <p style={styles.subtitle}>Veuillez entrer vos identifiants pour vous connecter</p>
 
-      <FloatingLabel
-        controlId="floatingInput"
-        label="Adresse email"
-        className="mb-3"
-      >
-        <Form.Control 
-          type="email" 
-          placeholder="name@example.com" 
-          style={styles.input} 
-          required
-        />
-      </FloatingLabel>
+      {/* Message d'erreur */}
+      {error && <Alert variant="danger">{error}</Alert>}
 
-      <FloatingLabel controlId="floatingPassword" label="Mot de passe">
-        <Form.Control 
-          type="password" 
-          placeholder="Mot de passe" 
-          style={styles.input} 
-          required
-        />
-      </FloatingLabel>
+      <Form onSubmit={handleSubmit}>
+        <FloatingLabel controlId="floatingEmail" label="Nom d'utilisateur" className="mb-3">
+          <Form.Control 
+            type="text" 
+             placeholder="Nom d'utilisateur"
+            name="username" 
+            value={formData.username} 
+            onChange={handleChange} 
+            required 
+          />
+        </FloatingLabel>
 
-      <div style={styles.optionsContainer}>
+        <FloatingLabel controlId="floatingPassword" label="Mot de passe" className="mb-3">
+          <Form.Control 
+            type="password" 
+            placeholder="Mot de passe" 
+            name="password" 
+            value={formData.password} 
+            onChange={handleChange} 
+            required 
+          />
+        </FloatingLabel>
+
         <Button variant="dark" type="submit" style={styles.button}>
-          Se connecter
+          {loading ? 'Chargement...' : 'Se connecter'}
         </Button>
-        <p style={styles.forgotPassword}>
-          <a href="/reset-password" style={styles.link}>Mot de passe oublié ?</a>
-        </p>
-      </div>
+      </Form>
+
+      <p style={styles.signupText}>
+        Vous n'avez pas de compte ? <a href="/inscription" style={styles.link}>Inscrivez-vous</a>
+      </p>
     </Container>
   );
 }
@@ -66,20 +110,14 @@ const styles = {
     color: '#666',
     marginBottom: '30px',
   },
-  input: {
-    padding: '10px',
-  },
-  optionsContainer: {
-    textAlign: 'center',
-    marginTop: '20px',
-  },
   button: {
     width: '100%',
     padding: '10px',
     fontSize: '1.1rem',
     fontWeight: 'bold',
+    marginTop: '20px',
   },
-  forgotPassword: {
+  signupText: {
     marginTop: '15px',
     textAlign: 'center',
   },
@@ -87,7 +125,7 @@ const styles = {
     color: '#007bff',
     textDecoration: 'none',
     fontWeight: 'bold',
-  }
+  },
 };
 
-export default Authentification;
+export default Connexion;
