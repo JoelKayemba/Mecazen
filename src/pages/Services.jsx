@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Row, Col, Card } from 'react-bootstrap';
+import { Container, Row, Col, Card , Button} from 'react-bootstrap';
 
 
 import image1 from '../assets/services/diagnostic.jpeg';
@@ -63,6 +63,7 @@ function Services() {
               <Card.Body>
                 <Card.Title>{service.title}</Card.Title>
                 <Card.Text>{service.description}</Card.Text>
+                <Button variant="dark">Reserver</Button>
               </Card.Body>
             </Card>
           </Col>
