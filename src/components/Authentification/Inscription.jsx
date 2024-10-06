@@ -56,8 +56,7 @@ function Inscription() {
       <p style={styles.subtitle}>Inscrivez-vous pour commencer à utiliser notre service</p>
 
 
-      {/* Message de succès */}
-      {user && <Alert variant="success">Inscription réussie !</Alert>}
+     
 
       {/* Message d'erreur */}
       {error && <Alert variant="danger">{error}</Alert>}
