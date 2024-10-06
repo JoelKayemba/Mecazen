@@ -75,3 +75,85 @@ body, html {
 .hero-section .btn-outline-dark {
   border: 2px solid black;
 }
+/* Styles pour la page FAQ */
+.faq {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.faq h1 {
+  color: #007bff;
+  font-size: 2rem;
+}
+
+.faq h2 {
+  margin-top: 20px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.faq p {
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+/* Styles globaux pour la page À propos */
+.apropos {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+}
+
+.apropos h1 {
+  color: #333;
+  font-size: 2.5rem;
+}
+
+.apropos p {
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+/* Styles pour la page Contact */
+.contact {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+  
+
+.contact form {
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.contact-form div {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+.contact label {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.contact input, .contact textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+}
+.contact-form textarea, .contact-form label {
+  width: 100%;
+}
