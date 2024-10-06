@@ -76,30 +76,59 @@ body, html {
   border: 2px solid black;
 }
 /* Styles pour la page FAQ */
-.faq {
+.faq-container {
+  padding: 40px 20px;
   max-width: 800px;
   margin: 0 auto;
-  padding: 40px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
 }
 
-.faq h1 {
-  color: #007bff;
-  font-size: 2rem;
-}
-
-.faq h2 {
-  margin-top: 20px;
-  font-size: 1.5rem;
+.faq-title {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 40px;
   color: #333;
 }
 
-.faq p {
-  margin-bottom: 10px;
-  font-size: 1rem;
+.faq-item {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
+
+.faq-question {
+  font-size: 1.5rem;
+  color: #000;
+  margin-bottom: 10px;
+}
+
+.faq-answer {
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Ajoute de l'espace autour de la page */
+@media (max-width: 768px) {
+  .faq-container {
+    padding: 20px 10px;
+  }
+
+  .faq-title {
+    font-size: 2rem;
+  }
+
+  .faq-question {
+    font-size: 1.3rem;
+  }
+
+  .faq-answer {
+    font-size: 1rem;
+  }
+}
+
 /* Styles globaux pour la page À propos */
 .apropos {
   max-width: 800px;
