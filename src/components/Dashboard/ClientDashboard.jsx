@@ -50,7 +50,7 @@ function ClientDashboard() {
           onClick: () => setActiveComponent(link.component)
         }))}
       />
-      <div style={{ marginLeft: '250px', padding: '20px', width: '100%' }}>
+      <div style={{ marginLeft: '250px',  width: '100%' }}>
         {renderComponent()}
       </div>
     </div>

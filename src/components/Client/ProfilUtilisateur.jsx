@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Modal, Form } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,14 +11,25 @@ function ProfilUtilisateur() {
   const { user } = useSelector((state) => state.inscription);
 
   const [userInfo, setUserInfo] = useState({
-    name: user.username,
-    email: user.email,
+    name: '',
+    email: '',
     password: '', 
   });
 
   const [showModal, setShowModal] = useState(false);
   const [modalField, setModalField] = useState('');
   const [updatedValue, setUpdatedValue] = useState('');
+
+  useEffect(() => {
+    // Met à jour l'état uniquement si user existe
+    if (user) {
+      setUserInfo({
+        name: user.username,
+        email: user.email,
+        password: '',
+      });
+    }
+  }, [user]);
 
   const handleShowModal = (field) => {
     setModalField(field);
