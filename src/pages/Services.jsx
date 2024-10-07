@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Row, Col, Card , Button, Jumbotron} from 'react-bootstrap';
+import { Container, Row, Col, Card , Button} from 'react-bootstrap';
 
 
 import image1 from '../assets/services/diagnostic.jpeg';
@@ -52,18 +52,18 @@ const servicesList = [
 function Services() {
   return (
     <>
-      {/* Barre de navigation */}
+      
       <Header />
 
-      {/* Section En-tête */}
-      <div className="bg-light text-center py-5">
+      
+      <div className="bg-white text-center py-5">
         <Container>
           <h1 className="display-4">Nos Services Mécaniques</h1>
           <p className="lead">Découvrez nos services professionnels pour tous vos besoins automobiles.</p>
         </Container>
       </div>
 
-      {/* Section Présentation des Services */}
+      
       <Container className="my-5">
         <h2 className="text-center mb-4">Présentation de Nos Services</h2>
         <p className="text-center">Présentation de nos principaux services: Réparation, Révision et Entretien général.</p>
@@ -83,7 +83,7 @@ function Services() {
         </Row>
       </Container>
 
-      {/* Section Fonctionnalités */}
+      
       <Container className="my-5">
         <h2 className="text-center mb-4">Fonctionnalités de Nos Services</h2>
         <Row>
@@ -114,14 +114,14 @@ function Services() {
         </Row>
       </Container>
 
-      {/* Section CTA (Appel à l'Action) */}
+     
       <Container fluid className="bg-dark text-white text-center py-5">
         <h2 className="display-5">Prêt à prendre rendez-vous?</h2>
         <p className="lead">Encourage les visiteurs à prendre rendez-vous pour l'un de nos services.</p>
         <Button variant="light" size="lg">Réserver un service maintenant</Button>
       </Container>
 
-      {/* Pied de Page */}
+      
       <Footer />
     </>
   );

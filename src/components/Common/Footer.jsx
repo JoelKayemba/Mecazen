@@ -69,7 +69,7 @@ const styles = {
     backgroundColor: '#343a40',
     color: '#fff',
     padding: '40px 0',
-    marginTop: '40px',
+    
   },
   col: {
     marginBottom: '20px',
