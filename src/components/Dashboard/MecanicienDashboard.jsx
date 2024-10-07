@@ -8,7 +8,7 @@ function MechanicDashboard() {
     { name: 'Tableau de bord', path: '/mecanicien/dashboard', icon: faChartLine },
     { name: 'Mon Planning', path: '/mecanicien/planning', icon: faCalendarAlt },
     { name: 'Mes Clients', path: '/mecanicien/clients', icon: faUsers },
-    { name: 'Benefices', path: '/mecanicien/documents', icon: faFileAlt },
+    { name: 'Documents', path: '/mecanicien/documents', icon: faFileAlt },
     { name: 'Historique', path: '/mecanicien/historique', icon: faHistory },
   ];
 
