@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Row, Col, Card , Button} from 'react-bootstrap';
+import { Container, Row, Col, Card , Button, Jumbotron} from 'react-bootstrap';
 
 
 import image1 from '../assets/services/diagnostic.jpeg';
@@ -52,25 +52,77 @@ const servicesList = [
 function Services() {
   return (
     <>
-    <Header/>
-    <Container className="my-5">
-      <h2 className="text-center mb-4">Nos Services Mécaniques</h2>
-      <Row>
-        {servicesList.map((service, index) => (
-          <Col md={4} sm={6} key={index} className="mb-4">
+      {/* Barre de navigation */}
+      <Header />
+
+      {/* Section En-tête */}
+      <div className="bg-light text-center py-5">
+        <Container>
+          <h1 className="display-4">Nos Services Mécaniques</h1>
+          <p className="lead">Découvrez nos services professionnels pour tous vos besoins automobiles.</p>
+        </Container>
+      </div>
+
+      {/* Section Présentation des Services */}
+      <Container className="my-5">
+        <h2 className="text-center mb-4">Présentation de Nos Services</h2>
+        <p className="text-center">Présentation de nos principaux services: Réparation, Révision et Entretien général.</p>
+        <Row>
+          {servicesList.map((service, index) => (
+            <Col md={4} sm={6} key={index} className="mb-4">
+              <Card>
+                <Card.Img variant="top" src={service.image} style={{ height: '200px', objectFit: 'cover' }} />
+                <Card.Body>
+                  <Card.Title>{service.title}</Card.Title>
+                  <Card.Text>{service.description}</Card.Text>
+                  <Button variant="dark">Réserver</Button>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </Container>
+
+      {/* Section Fonctionnalités */}
+      <Container className="my-5">
+        <h2 className="text-center mb-4">Fonctionnalités de Nos Services</h2>
+        <Row>
+          <Col md={4} className="mb-4">
             <Card>
-              <Card.Img variant="top" src={service.image} style={{ height: '200px', objectFit: 'cover' }} />
               <Card.Body>
-                <Card.Title>{service.title}</Card.Title>
-                <Card.Text>{service.description}</Card.Text>
-                <Button variant="dark">Reserver</Button>
+                <Card.Title>Réparation</Card.Title>
+                <Card.Text>Nous offrons des réparations complètes pour tous types de véhicules.</Card.Text>
               </Card.Body>
             </Card>
           </Col>
-        ))}
-      </Row>
-    </Container>
-    <Footer/>
+          <Col md={4} className="mb-4">
+            <Card>
+              <Card.Body>
+                <Card.Title>Révision</Card.Title>
+                <Card.Text>Assurez-vous que votre véhicule est toujours en parfait état avec notre service de révision.</Card.Text>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={4} className="mb-4">
+            <Card>
+              <Card.Body>
+                <Card.Title>Entretien général</Card.Title>
+                <Card.Text>Gardez votre voiture en bonne santé avec nos services d’entretien régulier.</Card.Text>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+
+      {/* Section CTA (Appel à l'Action) */}
+      <Container fluid className="bg-dark text-white text-center py-5">
+        <h2 className="display-5">Prêt à prendre rendez-vous?</h2>
+        <p className="lead">Encourage les visiteurs à prendre rendez-vous pour l'un de nos services.</p>
+        <Button variant="light" size="lg">Réserver un service maintenant</Button>
+      </Container>
+
+      {/* Pied de Page */}
+      <Footer />
     </>
   );
 }
