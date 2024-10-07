@@ -1,10 +1,29 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Container, Row, Col, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import image1 from '../../assets/car.jpg';
 import image2 from '../../assets/rendezvous.jpg';
 import image3 from '../../assets/historique.jpg';
 
 const FeaturesSection = () => {
+
+  const {  isAuth } = useSelector((state) => state.auth);
+  const { isUser } = useSelector((state) => state.inscription);
+  const navigate = useNavigate();
+
+
+
+    const handleReserver = () => {
+      if(isAuth || isUser){
+        navigate('/client-dashboard')
+      }
+      else{
+        navigate('/login')
+      }
+    } ;
+
+    
   return (
     <section className="features-section" style={styles.section}>
       <Container>
@@ -17,7 +36,7 @@ const FeaturesSection = () => {
             <img src={image1} alt="Gérer vos véhicules" style={styles.image} />
             <h4 style={styles.featureTitle}>Gérez vos véhicules facilement avec notre interface intuitive et conviviale.</h4>
             <p>Ajoutez, modifiez et suivez vos véhicules en toute simplicité.</p>
-            <Button variant="link" style={styles.link}>En savoir plus &gt;</Button>
+            <Button variant="link" style={styles.link}  onClick={handleReserver}>En savoir plus &gt;</Button>
           </Col>
 
           
@@ -25,7 +44,7 @@ const FeaturesSection = () => {
             <img src={image2} alt="Planifiez vos rendez-vous" style={styles.image} />
             <h4 style={styles.featureTitle}>Planifiez vos rendez-vous en quelques clics grâce à notre calendrier intégré.</h4>
             <p>Choisissez la date et l'heure qui vous conviennent le mieux.</p>
-            <Button variant="link" style={styles.link}>Réserver &gt;</Button>
+            <Button variant="link" style={styles.link}  onClick={handleReserver}>Réserver &gt;</Button>
           </Col>
 
          
@@ -33,7 +52,7 @@ const FeaturesSection = () => {
             <img src={image3} alt="Consultez l'historique" style={styles.image} />
             <h4 style={styles.featureTitle}>Consultez l'historique de vos réparations pour un suivi optimal.</h4>
             <p>Gardez une trace de toutes vos interventions et de leur coût.</p>
-            <Button variant="link" style={styles.link}>Historique &gt;</Button>
+            <Button variant="link" style={styles.link}  onClick={handleReserver}>Historique &gt;</Button>
           </Col>
         </Row>
       </Container>

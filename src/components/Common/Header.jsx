@@ -1,10 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import logo from '../../assets/MZ.png'
 import '../../App.css'
 
 const Header = () => {
+
+  const [showDashboard, setShowDashboard]= useState(false)
+
+  const {  isAuth } = useSelector((state) => state.auth);
+  const { isUser } = useSelector((state) => state.inscription);
+
+  useEffect(()=>{
+    if( isAuth || isUser){
+      setShowDashboard(true);
+    }
+  },[isAuth,isUser]);
+
   return (
     <Navbar bg="dark" variant="dark" expand="lg" className="mb-4" >
       <Container>
@@ -31,12 +44,22 @@ const Header = () => {
           </Nav>
           {/* Boutons Connexion et Inscription à droite */}
           <Nav className="ms-lg-auto mt-2 mt-lg-0 d-flex align-items-center">
-            <Button as={Link} to="/login" variant="outline-light" className="me-2 mb-2 mb-lg-0">
+            { showDashboard ? (
+             
+              <Button as={Link} to="/client-dashboard" variant="success" className="mb-2 mb-lg-0">
+                Acceder au tableau de bord
+              </Button>
+            ):(
+              <>
+              <Button as={Link} to="/login" variant="outline-light" className="me-2 mb-2 mb-lg-0">
               Connexion
-            </Button>
-            <Button as={Link} to="/inscription" variant="light" className="mb-2 mb-lg-0">
-              Inscription
-            </Button>
+              </Button>
+              <Button as={Link} to="/inscription" variant="light" className="mb-2 mb-lg-0">
+                Inscription
+              </Button>
+              </>
+            )}
+            
           </Nav>
         </Navbar.Collapse>
       </Container>

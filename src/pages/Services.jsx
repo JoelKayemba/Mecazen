@@ -1,4 +1,6 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card , Button} from 'react-bootstrap';
 
 
@@ -50,6 +52,23 @@ const servicesList = [
 ];
 
 function Services() {
+
+  const {  isAuth } = useSelector((state) => state.auth);
+  const { isUser } = useSelector((state) => state.inscription);
+  const navigate = useNavigate();
+
+
+
+    const handleReserver = () => {
+      if(isAuth || isUser){
+        navigate('/client-dashboard')
+      }
+      else{
+        navigate('/login')
+      }
+    } ;
+
+   
   return (
     <>
       
@@ -75,7 +94,6 @@ function Services() {
                 <Card.Body>
                   <Card.Title>{service.title}</Card.Title>
                   <Card.Text>{service.description}</Card.Text>
-                  <Button variant="dark">Réserver</Button>
                 </Card.Body>
               </Card>
             </Col>
@@ -118,7 +136,7 @@ function Services() {
       <Container fluid className="bg-dark text-white text-center py-5">
         <h2 className="display-5">Prêt à prendre rendez-vous?</h2>
         <p className="lead">Encourage les visiteurs à prendre rendez-vous pour l'un de nos services.</p>
-        <Button variant="light" size="lg">Réserver un service maintenant</Button>
+        <Button variant="light" size="lg" onClick={handleReserver}>Réserver un service maintenant</Button>
       </Container>
 
       

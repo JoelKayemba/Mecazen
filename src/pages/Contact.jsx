@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Container, Row, Col, Form, FloatingLabel } from 'react-bootstrap';
+import { Button, Container, Row, Col, Form, FloatingLabel, Toast } from 'react-bootstrap';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css'; // Importation du CSS de Leaflet
 import L from 'leaflet'; // Pour l'icône de marqueur par défaut
@@ -21,6 +21,8 @@ const Contact = () => {
     message: ''
   });
 
+  const [showToast, setShowToast] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -32,6 +34,16 @@ const Contact = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Message envoyé', formData);
+    
+    // Afficher la notification de succès
+    setShowToast(true);
+    
+    // Réinitialiser les champs du formulaire
+    setFormData({
+      name: '',
+      email: '',
+      message: ''
+    });
   };
 
   return (
@@ -123,12 +135,31 @@ const Contact = () => {
         </Container>
       </div>
 
+      {/* Notification de succès */}
+      <Toast
+        onClose={() => setShowToast(false)}
+        show={showToast}
+        delay={3000}
+        autohide
+        style={{
+          position: 'fixed',
+          bottom: 20,
+          right: 20,
+          minWidth: '250px',
+        }}
+      >
+        <Toast.Header>
+          <strong className="me-auto">Notification</strong>
+        </Toast.Header>
+        <Toast.Body>Votre message a été envoyé avec succès !</Toast.Body>
+      </Toast>
+
       <Footer />
     </>
   );
 };
 
-// Styles en JS
+
 const styles = {
   section: {
     minHeight: '100vh',
@@ -137,7 +168,7 @@ const styles = {
   },
   formColumn: {
     padding: '50px',
-    backgroundColor: '#f8f9fa',
+    backgroundColor: 'white',
     zIndex: 2,
   },
   formWrapper: {

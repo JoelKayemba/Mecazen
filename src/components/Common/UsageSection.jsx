@@ -1,8 +1,29 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { FaUserPlus, FaCar, FaCalendarAlt } from 'react-icons/fa';
 
 const UsageSection = () => {
+
+  const {  isAuth } = useSelector((state) => state.auth);
+  const { isUser } = useSelector((state) => state.inscription);
+  const navigate = useNavigate();
+
+
+
+    const handleReserver = () => {
+      if(isAuth || isUser){
+        navigate('/client-dashboard')
+      }
+      else{
+        navigate('/login')
+      }
+    } ;
+
+    const handleSavoirPlus=()=>{
+      navigate('/services')
+    };
   return (
     <section className="usage-section" style={styles.section}>
       <Container>
@@ -37,8 +58,8 @@ const UsageSection = () => {
         </Row>
 
         <div className="text-start mt-4">
-          <Button variant="dark" style={styles.button}>Commencer</Button>
-          <Button variant="outline-dark" style={styles.buttonOutline}>En savoir plus</Button>
+          <Button variant="dark" style={styles.button} onClick={handleReserver}>Commencer</Button>
+          <Button variant="outline-dark" style={styles.buttonOutline}  onClick={handleSavoirPlus}>En savoir plus</Button>
         </div>
       </Container>
     </section>

@@ -1,8 +1,28 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import placeholder from '../../assets/garage.jpg';
 
 const JoinSection = () => {
+  const {  isAuth } = useSelector((state) => state.auth);
+  const { isUser } = useSelector((state) => state.inscription);
+  const navigate = useNavigate();
+
+
+
+    const handleSinscrire = () => {
+      if(isAuth || isUser){
+        navigate('/client-dashboard')
+      }
+      else{
+        navigate('/inscription')
+      }
+    } ;
+
+    const handleSavoirPlus=()=>{
+      navigate('/services')
+    };
   return (
     <section className="join-section" style={styles.section}>
       <Container>
@@ -14,8 +34,8 @@ const JoinSection = () => {
               Inscrivez-vous maintenant et simplifiez la gestion de vos réservations de véhicules avec notre application.
             </p>
             <div style={styles.buttonContainer}>
-              <Button variant="dark" style={styles.button}>Inscription</Button>
-              <Button variant="outline-dark" style={styles.buttonOutline}>En savoir plus</Button>
+              <Button variant="dark" style={styles.button} onClick={handleSinscrire}>Inscription</Button>
+              <Button variant="outline-dark" style={styles.buttonOutline} onClick={handleSavoirPlus}>En savoir plus</Button>
             </div>
           </Col>
 
