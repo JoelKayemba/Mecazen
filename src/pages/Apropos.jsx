@@ -5,6 +5,7 @@ import Header from '../components/Common/Header';
 import image from '../assets/apropos.jpg'; 
 import image2 from '../assets/equipe.jpeg'; 
 
+
 const Apropos = () => {
   return (
     <>
@@ -32,7 +33,7 @@ const Apropos = () => {
           </Row>
         </Container>
       </div>
-
+    
       {/* Notre mission */}
       <Container fluid className="py-5" style={styles.missionSection}>
         <Row>

@@ -1,18 +1,31 @@
-// GestionVehicule.js
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, Button, Table, Modal, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { addVehicule, editVehicule, deleteVehicule } from '../../redux/Actions/vehiculeAction';
 
 function GestionVehicule() {
   const [showModal, setShowModal] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingVehicleId, setEditingVehicleId] = useState(null);
   const [newVehicle, setNewVehicle] = useState({ model: '', brand: '', year: '', mileage: '' });
-  const [vehicles, setVehicles] = useState([
-    { id: 1, model: 'Model S', brand: 'Tesla', year: 2020, mileage: '15,000 km' }
-  ]);
+  const vehicules = useSelector((state) => state.vehicule.vehicules);
+  const dispatch = useDispatch();
 
-  // Ouvrir le modal
-  const handleShowModal = () => setShowModal(true);
+  // Ouvrir le modal pour ajout ou édition
+  const handleShowModal = (vehicle = null) => {
+    if (vehicle) {
+      setNewVehicle(vehicle);
+      setIsEditing(true);
+      setEditingVehicleId(vehicle.id);
+    } else {
+      setNewVehicle({ model: '', brand: '', year: '', mileage: '' });
+      setIsEditing(false);
+      setEditingVehicleId(null);
+    }
+    setShowModal(true);
+  };
 
   // Fermer le modal
   const handleCloseModal = () => {
@@ -26,12 +39,28 @@ function GestionVehicule() {
     setNewVehicle({ ...newVehicle, [name]: value });
   };
 
-  // Ajouter un véhicule à la liste
-  const handleAddVehicle = () => {
-    const newId = vehicles.length + 1;
-    const newVehicleData = { id: newId, ...newVehicle };
-    setVehicles([...vehicles, newVehicleData]);
-    handleCloseModal();
+  // Ajouter ou éditer un véhicule
+  const handleAddOrEditVehicle = () => {
+    if (newVehicle.model && newVehicle.brand && newVehicle.year && newVehicle.mileage) {
+      if (isEditing) {
+        // Modifier le véhicule existant
+        
+        dispatch(editVehicule({ id: editingVehicleId, ...newVehicle }));
+        
+      } else {
+        // Ajouter un nouveau véhicule
+        const newId = vehicules.length + 1;
+        dispatch(addVehicule({ id: newId, ...newVehicle }));
+      }
+      handleCloseModal();
+    } else {
+      alert('Veuillez remplir tous les champs');
+    }
+  };
+
+  // Supprimer un véhicule
+  const handleDeleteVehicle = (id) => {
+    dispatch(deleteVehicule(id));
   };
 
   return (
@@ -41,7 +70,7 @@ function GestionVehicule() {
       {/* Section d'actions */}
       <Row className="mb-4" style={styles.actionRow}>
         <Col>
-          <Button variant="primary" style={styles.addButton} onClick={handleShowModal}>
+          <Button variant="primary" style={styles.addButton} onClick={() => handleShowModal()}>
             <FontAwesomeIcon icon={faPlus} /> Ajouter un Véhicule
           </Button>
         </Col>
@@ -64,7 +93,7 @@ function GestionVehicule() {
                   </tr>
                 </thead>
                 <tbody>
-                  {vehicles.map((vehicle) => (
+                  {vehicules && vehicules.map((vehicle) => (
                     <tr key={vehicle.id}>
                       <td>{vehicle.id}</td>
                       <td>{vehicle.model}</td>
@@ -72,10 +101,20 @@ function GestionVehicule() {
                       <td>{vehicle.year}</td>
                       <td>{vehicle.mileage}</td>
                       <td>
-                        <Button variant="warning" size="sm" style={styles.actionButton}>
+                        <Button 
+                          variant="warning" 
+                          size="sm" 
+                          style={styles.actionButton} 
+                          onClick={() => handleShowModal(vehicle)}
+                        >
                           <FontAwesomeIcon icon={faEdit} /> Modifier
                         </Button>{' '}
-                        <Button variant="danger" size="sm" style={styles.actionButton}>
+                        <Button 
+                          variant="danger" 
+                          size="sm" 
+                          style={styles.actionButton} 
+                          onClick={() => handleDeleteVehicle(vehicle.id)}
+                        >
                           <FontAwesomeIcon icon={faTrash} /> Supprimer
                         </Button>
                       </td>
@@ -88,10 +127,10 @@ function GestionVehicule() {
         </Col>
       </Row>
 
-      {/* Modal d'ajout de véhicule */}
+      {/* Modal d'ajout ou d'édition de véhicule */}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Ajouter un Nouveau Véhicule</Modal.Title>
+          <Modal.Title>{isEditing ? 'Modifier le Véhicule' : 'Ajouter un Nouveau Véhicule'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -141,8 +180,8 @@ function GestionVehicule() {
           <Button variant="secondary" onClick={handleCloseModal}>
             Annuler
           </Button>
-          <Button variant="primary" onClick={handleAddVehicle}>
-            Ajouter
+          <Button variant="primary" onClick={handleAddOrEditVehicle}>
+            {isEditing ? 'Enregistrer les Modifications' : 'Ajouter'}
           </Button>
         </Modal.Footer>
       </Modal>
