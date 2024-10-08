@@ -13,7 +13,11 @@ export const editVehicule = ( id , vehicule ) => {
     return {
         type: EDIT_VEHICULE,
         payload: {id, ...vehicule},
+        
+        
     };
+
+   
 };
 
 

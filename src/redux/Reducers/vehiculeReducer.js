@@ -17,7 +17,8 @@ const vehiculeReducer = ( state = etatInitial, action) => {
                     ...state,
                     vehicules: state.vehicules.map((vehicule) =>
                         vehicule.id === action.payload.id ? { ...vehicule, ...action.payload } : vehicule
-                    )
+                    ),
+                    
                 };            
         case DELETE_VEHICULE:
             return {
