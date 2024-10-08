@@ -40,7 +40,7 @@ function Connexion() {
       password: 'emilyspass',
       
     };
-    console.log('userData:', userData);
+    
 
     dispatch(loginUser(userData));  
   };
