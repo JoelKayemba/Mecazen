@@ -6,6 +6,7 @@ import notificationReducer from './Reducers/notificationReducer';
 import paiementReducer from './Reducers/paiementReducer';
 import reparationReducer from './Reducers/reparationReducer';
 import InscriptionReducer from './Reducers/InscriptionReducer';
+import mechanicReducer from './Reducers/mechanicReducer';
 
 
 
@@ -18,7 +19,8 @@ const store= configureStore (
             notification: notificationReducer,
             paiement: paiementReducer,
             reparation: reparationReducer,
-            inscription: InscriptionReducer
+            inscription: InscriptionReducer,
+            mechanic: mechanicReducer
         }
     }
 );

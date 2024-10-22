@@ -4,22 +4,28 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import { useSelector , useDispatch} from 'react-redux';
 import { fetchReparations } from '../../redux/Actions/reparationAction';
+import { fetchMechanics } from '../../redux/Actions/mechanicAction';
 
 function PriseRendezVous() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedVehicle, setSelectedVehicle] = useState('');
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
   const [selectedReparation, setSelectedReparation] = useState('');
+  const [selectedMechanic, setSelectedMechanic] = useState('');
+  const [description, setDescription] = useState('');
 
   // Récupération des véhicules et des modes de paiement depuis Redux
   const vehicules = useSelector((state) => state.vehicule.vehicules);
   const paymentMethods = useSelector((state) => state.paiement.paymentMethods);
   const reparations = useSelector((state) => state.reparation.reparations); // Réparations disponibles
+  const mechanics = useSelector((state) => state.mechanic.mechanics); // Mécaniciens disponibles
+  const mechanicError = useSelector((state) => state.mechanic.error); // Gestion des erreurs
   const dispatch = useDispatch();
 
    // Charger les réparations quand le composant est monté
    useEffect(() => {
     dispatch(fetchReparations());
+    dispatch(fetchMechanics());
   }, [dispatch]);
 
   const handleDateChange = (date) => {
@@ -28,9 +34,15 @@ function PriseRendezVous() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (selectedDate && selectedVehicle && selectedPaymentMethod) {
-      // Gestion de la soumission du rendez-vous ici
-      alert(`Rendez-vous pris pour le : ${selectedDate.toLocaleDateString()} avec le véhicule ${selectedVehicle} et le mode de paiement ${selectedPaymentMethod}`);
+    if (selectedDate && selectedVehicle && selectedPaymentMethod && selectedReparation && selectedMechanic && description) {
+     
+      alert(`
+        Rendez-vous pris pour le : ${selectedDate.toLocaleDateString()}
+        Véhicule : ${selectedVehicle}
+        Réparation : ${selectedReparation}
+        Mécanicien : ${selectedMechanic}
+        Description : ${description}
+      `);
     } else {
       alert('Veuillez remplir tous les champs');
     }
@@ -101,6 +113,41 @@ function PriseRendezVous() {
               ) : (
                 <p style={{color:'red'}}>Pas de réparation disponible.</p>
               )}
+            </Form.Group>
+
+             {/* Sélection de mécanicien */}
+             <Form.Group controlId="formMechanic">
+              <Form.Label>Sélectionnez un mécanicien</Form.Label>
+              {mechanicError ? (
+                <p>Erreur : {mechanicError}</p>
+              ) : mechanics.length > 0 ? (
+                <Form.Control
+                  as="select"
+                  value={selectedMechanic}
+                  onChange={(e) => setSelectedMechanic(e.target.value)}
+                >
+                  <option value="">Choisir un mécanicien</option>
+                  {mechanics.map((mechanic, index) => (
+                    <option key={index} value={mechanic.name}>
+                      {mechanic.name} - {mechanic.specialty}
+                    </option>
+                  ))}
+                </Form.Control>
+              ) : (
+                <p>Chargement des mécaniciens...</p>
+              )}
+            </Form.Group>
+
+            {/* Champ de description */}
+            <Form.Group controlId="formDescription">
+              <Form.Label>Description</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                placeholder="Décrivez les problèmes ou demandes spécifiques"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
             </Form.Group>
 
             <Form.Group controlId="formDate">
