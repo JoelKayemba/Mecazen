@@ -11,7 +11,7 @@ export const loginUser = (userData) => async (dispatch) => {
           'Content-Type': 'application/json',
         },
       });
-    console.log(userData)
+    console.log(response.data)
     dispatch({
       type: 'LOGIN_SUCCESS',
       payload: response.data, 

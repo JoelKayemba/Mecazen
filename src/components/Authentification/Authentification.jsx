@@ -37,7 +37,7 @@ function Connexion() {
     const userData = {
       // etant donne l'utilisation de l'API dummyJson il existe des utilisateur deja predefini pour la connexion
       username: formData.username,//'emilys',  
-      password: formData.username,//'emilyspass',
+      password: formData.password,//'emilyspass',
       
     };
     
