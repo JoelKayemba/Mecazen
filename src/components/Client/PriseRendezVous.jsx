@@ -5,6 +5,7 @@ import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import { useSelector , useDispatch} from 'react-redux';
 import { fetchReparations } from '../../redux/Actions/reparationAction';
 import { fetchMechanics } from '../../redux/Actions/mechanicAction';
+import { addToHistorique } from '../../redux/Actions/historiqueAction';
 
 function PriseRendezVous() {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -34,15 +35,24 @@ function PriseRendezVous() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (selectedDate && selectedVehicle && selectedPaymentMethod && selectedReparation && selectedMechanic && description) {
-     
-      alert(`
-        Rendez-vous pris pour le : ${selectedDate.toLocaleDateString()}
-        Véhicule : ${selectedVehicle}
-        Réparation : ${selectedReparation}
-        Mécanicien : ${selectedMechanic}
-        Description : ${description}
-      `);
+      const reservation = {
+        date: selectedDate.toLocaleDateString(),
+        vehicle: selectedVehicle,
+        reparation: selectedReparation,
+        mechanic: selectedMechanic,
+        description: description,
+        paymentMethod: selectedPaymentMethod,
+      };
+
+      // Ajouter la réservation à l'historique
+      dispatch(addToHistorique(reservation));
+      
+      
+      alert('Réservation effectuée avec succès');
+    
+      
     } else {
       alert('Veuillez remplir tous les champs');
     }
@@ -94,14 +104,16 @@ function PriseRendezVous() {
             )}
           </Form.Group>
 
-             {/* Sélection de réparation */}
-             <Form.Group controlId="formReparation">
+            {/* Sélection de réparation */}
+            <Form.Group controlId="formReparation">
               <Form.Label>Sélectionnez une réparation</Form.Label>
               {reparations.length > 0 ? (
                 <Form.Control
                   as="select"
-                  value={selectedReparation}
-                  onChange={(e) => setSelectedReparation(e.target.value)}
+                  onChange={(e) => {
+                    const selectedRep = reparations.find(rep => rep.title === e.target.value);
+                    setSelectedReparation(selectedRep); // Sélectionne l'objet réparation complet
+                  }}
                 >
                   <option value="">Choisir une réparation</option>
                   {reparations.map((reparation, index) => (
@@ -111,7 +123,7 @@ function PriseRendezVous() {
                   ))}
                 </Form.Control>
               ) : (
-                <p style={{color:'red'}}>Pas de réparation disponible.</p>
+                <p>Pas de réparation disponible.</p>
               )}
             </Form.Group>
 

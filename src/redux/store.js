@@ -7,6 +7,7 @@ import paiementReducer from './Reducers/paiementReducer';
 import reparationReducer from './Reducers/reparationReducer';
 import InscriptionReducer from './Reducers/InscriptionReducer';
 import mechanicReducer from './Reducers/mechanicReducer';
+import historiqueReducer from './Reducers/historiqueReducer';
 
 
 
@@ -20,7 +21,8 @@ const store= configureStore (
             paiement: paiementReducer,
             reparation: reparationReducer,
             inscription: InscriptionReducer,
-            mechanic: mechanicReducer
+            mechanic: mechanicReducer,
+            historique: historiqueReducer
         }
     }
 );
