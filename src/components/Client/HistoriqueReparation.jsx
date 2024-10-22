@@ -21,6 +21,7 @@ function HistoriqueReparation() {
               <th>Mécanicien</th>
               <th>Description</th>
               <th>Mode de Paiement</th>
+              <th>Prix</th>
             </tr>
           </thead>
           <tbody>

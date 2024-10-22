@@ -104,7 +104,7 @@ function ProfilUtilisateur() {
               </Row>
 
               <Row style={styles.row}>
-                <Col md={3}><strong>Numero de telephone :</strong></Col>
+                <Col md={3}><strong>Telephone :</strong></Col>
                 <Col>{userInfo.phone}</Col>
                 <Col md={3}>
                   <Button variant="warning" onClick={() => handleShowModal('phone')}>
