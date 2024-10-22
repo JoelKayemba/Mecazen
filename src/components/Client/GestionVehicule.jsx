@@ -193,7 +193,7 @@ function GestionVehicule() {
               Rechercher les informations
             </Button>
             {error && (
-              <p style={{color:'red'}}>Vehicule non trouvé</p>
+              <p style={{color:'red'}}>Vehicule non trouvé.</p>
             )}
 
             {/* Affichage des rappels si disponibles */}
