@@ -3,7 +3,10 @@ import { Container, Row, Col, Card, Button, Table, Modal, Form } from 'react-boo
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { addVehicule, editVehicule, deleteVehicule } from '../../redux/Actions/vehiculeAction';
+import { addVehicule, editVehicule, deleteVehicule, searchRecalls, resetRecalls } from '../../redux/Actions/vehiculeAction';
+
+// Fonction pour générer un ID incrémenté basé sur la longueur de la liste des véhicules
+const generateId = (vehicules) => vehicules.length + 1;
 
 function GestionVehicule() {
   const [showModal, setShowModal] = useState(false);
@@ -11,6 +14,7 @@ function GestionVehicule() {
   const [editingVehicleId, setEditingVehicleId] = useState(null);
   const [newVehicle, setNewVehicle] = useState({ model: '', brand: '', year: '', mileage: '' });
   const vehicules = useSelector((state) => state.vehicule.vehicules);
+  const recalls = useSelector((state) => state.vehicule.recalls); // Récupération des rappels
   const dispatch = useDispatch();
 
   // Ouvrir le modal pour ajout ou édition
@@ -31,6 +35,7 @@ function GestionVehicule() {
   const handleCloseModal = () => {
     setShowModal(false);
     setNewVehicle({ model: '', brand: '', year: '', mileage: '' });
+    dispatch(resetRecalls()); // Réinitialiser les rappels lors de la fermeture
   };
 
   // Gérer le changement des champs du formulaire
@@ -39,28 +44,41 @@ function GestionVehicule() {
     setNewVehicle({ ...newVehicle, [name]: value });
   };
 
-  // Ajouter ou éditer un véhicule
-  const handleAddOrEditVehicle = () => {
-    if (newVehicle.model && newVehicle.brand && newVehicle.year && newVehicle.mileage) {
-      if (isEditing) {
-        // Modifier le véhicule existant
-        
-        dispatch(editVehicule({ id: editingVehicleId, ...newVehicle }));
-        
-      } else {
-        // Ajouter un nouveau véhicule
-        const newId = vehicules.length + 1;
-        dispatch(addVehicule({ id: newId, ...newVehicle }));
-      }
-      handleCloseModal();
+  // Rechercher les rappels (recalls) du véhicule
+  const handleSearchRecalls = () => {
+    const { brand, model, year } = newVehicle;
+    if (brand && model && year) {
+      dispatch(searchRecalls(brand, model, year));
     } else {
-      alert('Veuillez remplir tous les champs');
+      alert('Veuillez remplir la marque, le modèle et l\'année');
     }
   };
 
-  // Supprimer un véhicule
-  const handleDeleteVehicle = (id) => {
-    dispatch(deleteVehicule(id));
+  // Ajouter ou éditer un véhicule avec les informations de rappel
+  const handleSubmit = () => {
+    if (!newVehicle.id && !isEditing) {
+      // Générer un ID incrémenté basé sur la longueur de la liste des véhicules
+      newVehicle.id = generateId(vehicules);
+    }
+
+    // Ajouter les informations des rappels au véhicule
+    if (recalls.length > 0) {
+      const recallInfo = recalls.map((recall) => ({
+        component: recall.Component,
+        summary: recall.Summary
+      }));
+
+      // Ajouter les rappels dans les informations du véhicule
+      newVehicle.recalls = recallInfo;
+    }
+
+    // Dispatch l'ajout ou l'édition avec les détails de rappel inclus
+    dispatch(isEditing ? editVehicule(editingVehicleId, newVehicle) : addVehicule(newVehicle));
+
+    // Fermer le modal et réinitialiser les rappels
+    setShowModal(false);
+    setNewVehicle({ model: '', brand: '', year: '', mileage: '' });
+    dispatch(resetRecalls()); // Réinitialiser les rappels après l'ajout ou la modification
   };
 
   return (
@@ -113,7 +131,7 @@ function GestionVehicule() {
                           variant="danger" 
                           size="sm" 
                           style={styles.actionButton} 
-                          onClick={() => handleDeleteVehicle(vehicle.id)}
+                          onClick={() => dispatch(deleteVehicule(vehicle.id))}
                         >
                           <FontAwesomeIcon icon={faTrash} /> Supprimer
                         </Button>
@@ -164,6 +182,31 @@ function GestionVehicule() {
                 placeholder="Entrez l'année"
               />
             </Form.Group>
+
+            {/* Bouton pour rechercher les rappels */}
+            <Button 
+              variant="info" 
+              onClick={handleSearchRecalls}
+              style={styles.searchButton}
+            >
+              Rechercher les informations
+            </Button>
+
+            {/* Affichage des rappels si disponibles */}
+            {recalls.length > 0 && (
+              <div style={styles.recalls}>
+                <h5>Rappels du véhicule</h5>
+                <ul>
+                  {recalls.map((recall, index) => (
+                    <li key={index}>
+                      <strong>Composant : </strong>{recall.Component}<br />
+                      <strong>Résumé : </strong>{recall.Summary}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             <Form.Group className="mb-3">
               <Form.Label>Kilométrage</Form.Label>
               <Form.Control
@@ -180,7 +223,7 @@ function GestionVehicule() {
           <Button variant="secondary" onClick={handleCloseModal}>
             Annuler
           </Button>
-          <Button variant="primary" onClick={handleAddOrEditVehicle}>
+          <Button variant="primary" onClick={handleSubmit}>
             {isEditing ? 'Enregistrer les Modifications' : 'Ajouter'}
           </Button>
         </Modal.Footer>
@@ -224,6 +267,15 @@ const styles = {
     marginRight: '10px',
     display: 'inline-flex',
     alignItems: 'center',
+  },
+  searchButton: {
+    marginTop: '10px',
+  },
+  recalls: {
+    marginTop: '20px',
+    backgroundColor: '#f8f9fa',
+    padding: '10px',
+    borderRadius: '8px',
   },
 };
 
