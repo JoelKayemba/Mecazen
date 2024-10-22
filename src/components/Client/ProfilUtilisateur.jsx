@@ -8,7 +8,15 @@ import { inscriptionUser } from '../../redux/Actions/InscriptionAction';
 
 function ProfilUtilisateur() {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.inscription);
+  const user = useSelector((state) => {
+    // Vérifiez d'abord si l'utilisateur est dans inscription
+    if (state.inscription.user) {
+        return state.inscription.user;
+    }
+    // Sinon, récupérez-le dans auth
+    return state.auth.user;
+});
+
 
   const [userInfo, setUserInfo] = useState({
     name: '',
