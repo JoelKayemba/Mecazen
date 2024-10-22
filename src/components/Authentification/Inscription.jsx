@@ -11,6 +11,7 @@ function Inscription() {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
+    phone:'',
     password: '',
     confirmPassword: '',
   });
@@ -44,6 +45,7 @@ function Inscription() {
     const userData={
       username: formData.username,
       email: formData.email,
+      phone: formData.phone,
       password: formData.password
     };
 
@@ -80,6 +82,17 @@ function Inscription() {
             placeholder="name@example.com" 
             name="email" 
             value={formData.email} 
+            onChange={handleChange} 
+            required 
+          />
+        </FloatingLabel>
+
+        <FloatingLabel controlId="floatingPhone" label="Numero de Telephone" className="mb-3">
+          <Form.Control 
+            type="text" 
+            placeholder="+1 873 364 3664" 
+            name="phone" 
+            value={formData.phone} 
             onChange={handleChange} 
             required 
           />

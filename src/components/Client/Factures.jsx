@@ -19,10 +19,11 @@ function Factures() {
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
 
-    doc.text('Facture Professionnelle', 10, 10);
+    doc.text('Facture MecaZen', 10, 10);
     doc.text(`Date : ${new Date().toLocaleDateString()}`, 10, 20);
     doc.text(`Client : ${user ? user.username : 'Nom non disponible'}`, 10, 30);
-    doc.text('Adresse : 123 Rue Exemple, Ville', 10, 40);
+    doc.text(`Numero de telephone : ${user ? user.phone : 'Numero non disponible'}`, 10, 40);
+    
     
     let yOffset = 50; // Déplacement vertical initial pour les détails des réparations
     doc.text('Détails de la réparation', 10, yOffset);
@@ -57,6 +58,7 @@ function Factures() {
             <p>Date : {new Date().toLocaleDateString()}</p>
             <h5>Client</h5>
             <p>Nom du client : {user ? user.username : 'Nom non disponible'}</p>
+            <p>Numero de telephone : {user ? user.phone : 'Numero de telephone non disponible'}</p>
             
 
             <h5>Détails de la réparation</h5>

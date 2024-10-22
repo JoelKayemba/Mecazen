@@ -21,6 +21,7 @@ function ProfilUtilisateur() {
   const [userInfo, setUserInfo] = useState({
     name: '',
     email: '',
+    phone:'',
     password: '', 
   });
 
@@ -34,6 +35,7 @@ function ProfilUtilisateur() {
       setUserInfo({
         name: user.username,
         email: user.email,
+        phone: user.phone,
         password: '',
       });
     }
@@ -60,6 +62,7 @@ function ProfilUtilisateur() {
     const saveInfo={
       username: updatedUserInfo.name,
       email: updatedUserInfo.email,
+      phone: updatedUserInfo.phone,
       password: updatedUserInfo.password
       
     }
@@ -95,6 +98,16 @@ function ProfilUtilisateur() {
                 <Col>{userInfo.email}</Col>
                 <Col md={3}>
                   <Button variant="warning" onClick={() => handleShowModal('email')}>
+                    <FontAwesomeIcon icon={faEdit} /> Modifier
+                  </Button>
+                </Col>
+              </Row>
+
+              <Row style={styles.row}>
+                <Col md={3}><strong>Numero de telephone :</strong></Col>
+                <Col>{userInfo.phone}</Col>
+                <Col md={3}>
+                  <Button variant="warning" onClick={() => handleShowModal('phone')}>
                     <FontAwesomeIcon icon={faEdit} /> Modifier
                   </Button>
                 </Col>
