@@ -14,6 +14,7 @@ function GestionVehicule() {
   const [editingVehicleId, setEditingVehicleId] = useState(null);
   const [newVehicle, setNewVehicle] = useState({ model: '', brand: '', year: '', mileage: '' });
   const vehicules = useSelector((state) => state.vehicule.vehicules);
+  const error = useSelector((state) => state.vehicule.error)
   const recalls = useSelector((state) => state.vehicule.recalls); // Récupération des rappels
   const dispatch = useDispatch();
 
@@ -191,6 +192,9 @@ function GestionVehicule() {
             >
               Rechercher les informations
             </Button>
+            {error && (
+              <p style={{color:'red'}}>Vehicule non trouvé</p>
+            )}
 
             {/* Affichage des rappels si disponibles */}
             {recalls.length > 0 && (

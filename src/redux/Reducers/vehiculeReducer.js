@@ -1,4 +1,4 @@
-import { ADD_VEHICULE, EDIT_VEHICULE, DELETE_VEHICULE, SEARCH_RECALLS, RESET_RECALLS } from '../Actions/vehiculeAction';
+import { ADD_VEHICULE, EDIT_VEHICULE, DELETE_VEHICULE, SEARCH_RECALLS, RESET_RECALLS , ERROR_SEARCH } from '../Actions/vehiculeAction';
 
 const initialState = {
   vehicules: [],
@@ -35,6 +35,9 @@ const vehiculeReducer = (state = initialState, action) => {
         ...state,
         recalls: [],
       };
+
+      case ERROR_SEARCH:
+        return { ...state, error: action.payload };
     default:
       return state;
   }
