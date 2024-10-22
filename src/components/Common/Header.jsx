@@ -7,14 +7,17 @@ import '../../App.css'
 
 const Header = () => {
 
-  const [showDashboard, setShowDashboard]= useState(false)
-
+  const [showDashboard, setShowDashboard]= useState(false);
+  const [showMechanicDashboard,setShowMechanicDashboard] = useState(false);
   const {  isAuth } = useSelector((state) => state.auth);
   const { isUser } = useSelector((state) => state.inscription);
-
+  const {isMechanic} = useSelector((state) => state.auth)
   useEffect(()=>{
     if( isAuth || isUser){
       setShowDashboard(true);
+    }
+    if(isMechanic ) {
+      setShowMechanicDashboard(true);
     }
   },[isAuth,isUser]);
 
@@ -44,12 +47,18 @@ const Header = () => {
           </Nav>
           {/* Boutons Connexion et Inscription à droite */}
           <Nav className="ms-lg-auto mt-2 mt-lg-0 d-flex align-items-center">
-            { showDashboard ? (
+            { showDashboard && !isMechanic ? (
              
               <Button as={Link} to="/client-dashboard" variant="success" className="mb-2 mb-lg-0">
                 Acceder au tableau de bord
               </Button>
-            ):(
+            ):showMechanicDashboard?(
+              <Button as={Link} to="/mechanic-dashboard" variant="success" className="mb-2 mb-lg-0">
+              Acceder au tableau de bord mecanicien
+            </Button>
+            ):
+
+            (
               <>
               <Button as={Link} to="/login" variant="outline-light" className="me-2 mb-2 mb-lg-0">
               Connexion

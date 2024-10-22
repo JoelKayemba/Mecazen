@@ -1,6 +1,10 @@
 import axios from 'axios';
 import { connexionURL } from '../../services/dummyJsonApi';
-
+const mechanicUser = [
+  {username: "emilys",password: "emilyspass"},
+  {username: "michaelw", password: "michaelwpass"},
+  {username: "sophiab", password: "sophiabpass"}
+]
 export const loginUser = (userData) => async (dispatch) => {
   try {
     dispatch({ type: 'LOGIN_REQUEST' });
@@ -11,10 +15,14 @@ export const loginUser = (userData) => async (dispatch) => {
           'Content-Type': 'application/json',
         },
       });
-    console.log(response.data)
+    console.log(response.data);
+    const user = response.data;
+    const isMechanic = mechanicUser.some(
+      (mechanic) => mechanic.username === userData.username && mechanic.password === userData.password
+    );
     dispatch({
       type: 'LOGIN_SUCCESS',
-      payload: response.data, 
+      payload: { ...user, isMechanic}
     });
   } catch (error) {
     dispatch({
