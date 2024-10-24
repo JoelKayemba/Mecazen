@@ -15,6 +15,11 @@ import Services from './pages/Services';
 import FAQ from './pages/FAQ';
 import NotFoundPage from './pages/NotFoundPage';
 
+import TableauDeBordMecanicien from './components/Dashboard/TableauDeBordMecanicien';
+import MonPlanning from './components/Mecanicien/GestionRendezVous';
+import MesClients from './components/Mecanicien/ApercuBenefices';
+import Documents from './components/Mecanicien/ProfilMecanicien';
+import Historique from './components/Mecanicien/Statistiques';
 
 
 function App() {
@@ -31,6 +36,12 @@ function App() {
           <Route path="/tableau_de_Bord" element={<TableauDeBord />} />
           <Route path="/FAQ" element={<FAQ />} />
           
+          <Route path="/Dashboard/TableauDeBordMecanicien" element={<TableauDeBordMecanicien />} />
+          <Route path="/mecanicien/GestionRendezVous" element={<MonPlanning />} />
+          <Route path="/mecanicien/ApercuBenefices" element={<MesClients />} />
+          <Route path="/mecanicien/ProfilMecanicien" element={<Documents />} />
+          <Route path="/mecanicien/Statistiques" element={<Historique />} />
+     
 
           {/* Routes protégées par authentification */}
           <Route path="/client-dashboard" element={<ClientDashboard />} />
