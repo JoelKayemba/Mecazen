@@ -17,8 +17,8 @@ import NotFoundPage from './pages/NotFoundPage';
 
 import TableauDeBordMecanicien from './components/Dashboard/TableauDeBordMecanicien';
 import MonPlanning from './components/Mecanicien/GestionRendezVous';
-import MesClients from './components/Mecanicien/ApercuBenefices';
-import Documents from './components/Mecanicien/ProfilMecanicien';
+import MesClients from './components/Mecanicien/Clients';
+import Documents from './components/Mecanicien/Documents';
 import Historique from './components/Mecanicien/Statistiques';
 
 

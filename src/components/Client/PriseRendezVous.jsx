@@ -6,7 +6,7 @@ import { useSelector , useDispatch} from 'react-redux';
 import { fetchReparations } from '../../redux/Actions/reparationAction';
 import { fetchMechanics } from '../../redux/Actions/mechanicAction';
 import { addToHistorique } from '../../redux/Actions/historiqueAction';
-
+import {addToRendezVous}   from '../../redux/Actions/rendezVousAction';
 function PriseRendezVous() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedVehicle, setSelectedVehicle] = useState('');
@@ -48,7 +48,8 @@ function PriseRendezVous() {
 
       // Ajouter la réservation à l'historique
       dispatch(addToHistorique(reservation));
-      
+      // Ajouter la réservation à l'historique des rendezVous
+      dispatch(addToRendezVous(reservation));
       
       alert('Réservation effectuée avec succès');
     

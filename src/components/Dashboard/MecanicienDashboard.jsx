@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import Sidebar from '../Common/Sidebar';
 import { faChartLine, faCalendarAlt, faUsers, faFileAlt, faHistory } from '@fortawesome/free-solid-svg-icons';
 import MonPlanning from '../Mecanicien/GestionRendezVous'; // Composant pour afficher le planning des rendez-vous
-import MesClients from '../Mecanicien/ApercuBenefices'; // Composant pour afficher la liste des clients
-import Documents from '../Mecanicien/ProfilMecanicien'; // Composant pour la gestion des documents
+import MesClients from '../Mecanicien/Clients'; // Composant pour afficher la liste des clients
+import Documents from '../Mecanicien/Documents'; // Composant pour la gestion des documents
 import Historique from '../Mecanicien/Statistiques'; // Composant pour afficher l'historique
 import TableauDeBordMecanicien from './TableauDeBordMecanicien'; // Composant pour le tableau de bord principal
 
@@ -21,7 +21,7 @@ function MecanicienDashboard() {
 
   const renderComponent = () => {
     switch (activeComponent) {
-      case 'TableauDeBordMecanicien':
+      case 'Mon tableau de bord':
         return <TableauDeBordMecanicien />;
       case 'MonPlanning':
         return <MonPlanning />;

@@ -4,7 +4,7 @@ import React from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartLine, faCalendarAlt, faUsers, faFileAlt, faHistory } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom'; // Utilisez useNavigate au lieu de useHistory
+import { useNavigate } from 'react-router-dom'; 
 
 
 function TableauDeBordMecanicien() {
@@ -13,8 +13,8 @@ function TableauDeBordMecanicien() {
   const dashboardItems = [
     { title: 'Tableau de bord' , icon: faChartLine, description: 'Vue d\'ensemble de vos activités et statistiques.', path: '/Dashboard/TableauDeBordMecanicien' },
     { title: 'Mon Planning', icon: faCalendarAlt, description: 'Gérez et consultez vos rendez-vous planifiés.', path: '/mecanicien/GestionRendezVous' },
-    { title: 'Mes Clients', icon: faUsers, description: 'Consultez la liste de vos clients et leurs informations.', path: '/mecanicien/ApercuBenefices' },
-    { title: 'Documents', icon: faFileAlt, description: 'Gérez les documents liés aux réparations et factures.', path: '/mecanicien/ProfilMecanicien' },
+    { title: 'Mes Clients', icon: faUsers, description: 'Consultez la liste de vos clients et leurs informations.', path: '/mecanicien/Clients' },
+    { title: 'Documents', icon: faFileAlt, description: 'Gérez les documents liés aux réparations et factures.', path: '/mecanicien/Documents' },
     { title: 'Historique', icon: faHistory, description: 'Consultez l\'historique de vos réparations.', path: '/mecanicien/Statistiques' },
   ];
 

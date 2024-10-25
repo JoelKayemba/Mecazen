@@ -8,7 +8,7 @@ import reparationReducer from './Reducers/reparationReducer';
 import InscriptionReducer from './Reducers/InscriptionReducer';
 import mechanicReducer from './Reducers/mechanicReducer';
 import historiqueReducer from './Reducers/historiqueReducer';
-
+import gestionrendezVousReduce from './Reducers/gestionrendezVousReduce';
 
 
 const store= configureStore (
@@ -22,7 +22,8 @@ const store= configureStore (
             reparation: reparationReducer,
             inscription: InscriptionReducer,
             mechanic: mechanicReducer,
-            historique: historiqueReducer
+            historique: historiqueReducer,
+            rendezVous: gestionrendezVousReduce
         }
     }
 );
