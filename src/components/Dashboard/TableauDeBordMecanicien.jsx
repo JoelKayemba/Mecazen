@@ -4,23 +4,21 @@ import React from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartLine, faCalendarAlt, faUsers, faFileAlt, faHistory } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom'; 
+
 
 
 function TableauDeBordMecanicien() {
      
-  const navigate = useNavigate(); // Utilisez useNavigate pour la navigation
+
   const dashboardItems = [
-    { title: 'Tableau de bord' , icon: faChartLine, description: 'Vue d\'ensemble de vos activités et statistiques.', path: '/Dashboard/TableauDeBordMecanicien' },
-    { title: 'Mon Planning', icon: faCalendarAlt, description: 'Gérez et consultez vos rendez-vous planifiés.', path: '/mecanicien/GestionRendezVous' },
-    { title: 'Mes Clients', icon: faUsers, description: 'Consultez la liste de vos clients et leurs informations.', path: '/mecanicien/Clients' },
-    { title: 'Documents', icon: faFileAlt, description: 'Gérez les documents liés aux réparations et factures.', path: '/mecanicien/Documents' },
-    { title: 'Historique', icon: faHistory, description: 'Consultez l\'historique de vos réparations.', path: '/mecanicien/Statistiques' },
+    { title: 'Tableau de bord' , icon: faChartLine, description: 'Vue d\'ensemble de vos activités et statistiques.' },
+    { title: 'Mon Planning', icon: faCalendarAlt, description: 'Gérez et consultez vos rendez-vous planifiés.' },
+    { title: 'Mes Clients', icon: faUsers, description: 'Consultez la liste de vos clients et leurs informations.' },
+    { title: 'Documents', icon: faFileAlt, description: 'Gérez les documents liés aux réparations et factures.'},
+    { title: 'Historique', icon: faHistory, description: 'Consultez l\'historique de vos réparations.'},
   ];
 
-  const handleCardClick = (path) => {
-    navigate(path); // Utilisez navigate pour rediriger vers la page
-  };
+  
 
   return (
     
@@ -31,7 +29,6 @@ function TableauDeBordMecanicien() {
           <Col md={4} sm={6} xs={12} key={index} className="mb-4">
             <Card 
               style={styles.card} 
-              onClick={() => handleCardClick(item.path)} 
               onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'} 
               onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
             >
@@ -67,7 +64,7 @@ const styles = {
     borderRadius: '10px',
     transition: 'transform 0.2s, box-shadow 0.2s',
     textAlign: 'center',
-    cursor: 'pointer',
+    
   },
   icon: {
     fontSize: '3rem',
