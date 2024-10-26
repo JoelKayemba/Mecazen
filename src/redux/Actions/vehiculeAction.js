@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// Action Types
+
 export const ADD_VEHICULE = 'ADD_VEHICULE';
 export const EDIT_VEHICULE = 'EDIT_VEHICULE';
 export const DELETE_VEHICULE = 'DELETE_VEHICULE';
@@ -35,7 +35,7 @@ export const deleteVehicule = (id) => {
   };
 };
 
-// Action pour rechercher les rappels (recalls) du véhicule
+// Action pour rechercher les rappels véhicule
 export const searchRecalls = (brand, model, year) => async (dispatch) => {
   try {
     const response = await axios.get(`${NHTSA_RECALLS_API_URL}?make=${brand}&model=${model}&modelYear=${year}`);
@@ -58,7 +58,7 @@ export const searchRecalls = (brand, model, year) => async (dispatch) => {
       payload: errorMessage,
     });
 
-    // Affichage dans la console pour le mode développement
+    // Affichage dans la console
     console.error("Erreur lors de la recherche des rappels :", errorMessage);
   }
 };

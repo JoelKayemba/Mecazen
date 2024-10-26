@@ -2,14 +2,14 @@
 export const FETCH_MECHANICS = 'FETCH_MECHANICS';
 export const FETCH_MECHANICS_ERROR = 'FETCH_MECHANICS_ERROR';
 
-// Action pour récupérer les mécaniciens depuis l'API dummyjson
+// Action pour récupérer les mécaniciens depuis l'API 
 export const fetchMechanics = () => {
   return async (dispatch) => {
     try {
-      const response = await fetch('https://dummyjson.com/users'); // Appel à l'API
+      const response = await fetch('https://dummyjson.com/users'); 
       const data = await response.json();
 
-      // Sélectionner trois mécaniciens spécifiques selon leur nom
+      // on specifie trois utilisateurs comme nos mecaniciens
       const selectedMechanics = data.users.filter(user =>
         ['Michael Williams', 'Emily Johnson', 'Sophia Brown'].includes(`${user.firstName} ${user.lastName}`)
       ).map(user => ({

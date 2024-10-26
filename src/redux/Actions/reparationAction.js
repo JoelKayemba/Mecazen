@@ -2,7 +2,7 @@
 
 export const FETCH_REPARATIONS = 'FETCH_REPARATIONS';
 
-// Action pour récupérer les réparations avec uniquement le titre et le prix
+// Action pour récupérer les réparations avec le titre
 export const fetchReparations = () => {
   return {
     type: FETCH_REPARATIONS,

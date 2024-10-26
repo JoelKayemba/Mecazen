@@ -9,7 +9,7 @@ const etatInitial = {
 const rendezVousReducer = (state = etatInitial, action) => {
   switch (action.type) {
     case ADD_TO_RENDEZ_VOUS:
-      // Ajouter le rendez-vous à la liste
+      // Ajout du rendez-vous à la liste
       return {
         ...state,
         rendezVous: [...state.rendezVous, action.payload],

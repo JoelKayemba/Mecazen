@@ -35,7 +35,7 @@ function Factures() {
 
     const total = userFactures.reduce((total, facture) => total + (parseFloat(facture.price) || 0), 0).toFixed(2);
     yOffset += 20;
-    doc.text(`Total : ${total} €`, 10, yOffset);
+    doc.text(`Total : ${total} $`, 10, yOffset);
 
     doc.save('facture.pdf');
   };
@@ -77,7 +77,7 @@ function Factures() {
                     <td>{facture.duration || 'N/A'}</td>
                     <td>{facture.description}</td>
                     <td>{facture.paymentMethod}</td>
-                    <td>{facture.price ? `${facture.price} €` : 'N/A'}</td>
+                    <td>{facture.price ? `${facture.price} $` : '0'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -85,7 +85,7 @@ function Factures() {
 
             <h5>Total</h5>
             <p>
-              {userFactures.reduce((total, facture) => total + (parseFloat(facture.price) || 0), 0).toFixed(2)} €
+              {userFactures.reduce((total, facture) => total + (parseFloat(facture.price) || 0), 0).toFixed(2)} $
             </p>
           </div>
 

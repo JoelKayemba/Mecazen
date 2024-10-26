@@ -10,7 +10,7 @@ const historiqueReducer = (state = initialState, action) => {
     case ADD_TO_HISTORIQUE:
       return {
         ...state,
-        historique: [...state.historique, action.payload], // Ajouter la réservation à l'historique
+        historique: [...state.historique, action.payload], 
       };
     default:
       return state;
