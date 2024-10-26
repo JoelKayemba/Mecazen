@@ -54,7 +54,6 @@ function Documents() {
       <Table striped bordered hover style={styles.table}>
         <thead>
           <tr>
-            <th>Nom du Document</th>
             <th>Date</th>
             <th>Client</th>
             <th>Montant</th>
@@ -65,7 +64,6 @@ function Documents() {
         <tbody>
           {filteredDocuments.map((doc, index) => (
             <tr key={index}>
-              <td>{doc.nom}</td>
               <td>{doc.factureDate}</td>
               <td>{doc.name}</td>
               <td>{doc.price} $</td>

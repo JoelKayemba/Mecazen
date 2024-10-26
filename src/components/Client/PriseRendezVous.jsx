@@ -3,10 +3,10 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { v4 as uuidv4 } from 'uuid'; // Importation d'uuid
+import { v4 as uuidv4 } from 'uuid';
 import { fetchReparations } from '../../redux/Actions/reparationAction';
 import { fetchMechanics } from '../../redux/Actions/mechanicAction';
-import { addToRendezVous  } from '../../redux/Actions/rendezVousAction';
+import { addToRendezVous } from '../../redux/Actions/rendezVousAction';
 
 function PriseRendezVous() {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -16,15 +16,15 @@ function PriseRendezVous() {
   const [selectedMechanic, setSelectedMechanic] = useState('');
   const [description, setDescription] = useState('');
 
-  // Récupération des véhicules et des modes de paiement depuis Redux
-  const vehicules = useSelector((state) => state.vehicule.vehicules);
-  const paymentMethods = useSelector((state) => state.paiement.paymentMethods);
-  const reparations = useSelector((state) => state.reparation.reparations); 
-  const mechanics = useSelector((state) => state.mechanic.mechanics);
-  const mechanicError = useSelector((state) => state.mechanic.error);
-
   // Récupération de l’utilisateur connecté
   const user = useSelector((state) => state.inscription.user || state.auth.user);
+
+  // Récupération des véhicules et des modes de paiement depuis Redux
+  const vehicules = useSelector((state) => state.vehicule.vehicules).filter(v => v.userId === user.id);
+  const paymentMethods = useSelector((state) => state.paiement.paymentMethods).filter(p => p.userId === user.id);
+  const reparations = useSelector((state) => state.reparation.reparations);
+  const mechanics = useSelector((state) => state.mechanic.mechanics);
+  const mechanicError = useSelector((state) => state.mechanic.error);
 
   const dispatch = useDispatch();
 
@@ -41,20 +41,19 @@ function PriseRendezVous() {
 
     if (selectedDate && selectedVehicle && selectedPaymentMethod && selectedReparation && selectedMechanic && description) {
       const reservation = {
-        id: uuidv4(), // Génère un identifiant unique
+        id: uuidv4(),
         name: user?.username,
         email: user?.email,
         phone: user?.phone,
         date: selectedDate.toLocaleDateString(),
-        vehicle: selectedVehicle, // Envoie l'objet véhicule complet
+        vehicle: selectedVehicle,
         reparation: selectedReparation,
         mechanic: selectedMechanic,
         description,
         paymentMethod: selectedPaymentMethod,
       };
 
-    
-      dispatch(addToRendezVous(reservation)); 
+      dispatch(addToRendezVous(reservation));
 
       alert('Réservation effectuée avec succès');
     } else {
@@ -72,13 +71,13 @@ function PriseRendezVous() {
             <Form.Group controlId="formVehicle">
               <Form.Label>Sélectionnez votre véhicule</Form.Label>
               {vehicules.length > 0 ? (
-               <Form.Control
+                <Form.Control
                   as="select"
                   value={selectedVehicle?.id || ''}
                   onChange={(e) => {
-                    const vehicle = vehicules.find(v => v.id.toString() === e.target.value); // Conversion en string si nécessaire
+                    const vehicle = vehicules.find(v => v.id.toString() === e.target.value);
                     if (vehicle) {
-                      setSelectedVehicle(vehicle); // Assurez-vous que l'objet complet est défini
+                      setSelectedVehicle(vehicle);
                     }
                   }}
                 >
@@ -88,8 +87,7 @@ function PriseRendezVous() {
                       {vehicule.brand} {vehicule.model} ({vehicule.year})
                     </option>
                   ))}
-             </Form.Control>
-             
+                </Form.Control>
               ) : (
                 <p style={{ color: 'red' }}>Pas de véhicule ajouté. Veuillez ajouter un véhicule dans Gestion de véhicule.</p>
               )}
@@ -130,7 +128,7 @@ function PriseRendezVous() {
                   <option value="">Choisir une réparation</option>
                   {reparations.map((reparation, index) => (
                     <option key={index} value={reparation.title}>
-                      {reparation.title} 
+                      {reparation.title}
                     </option>
                   ))}
                 </Form.Control>
@@ -185,7 +183,7 @@ function PriseRendezVous() {
               />
             </Form.Group>
 
-            <Button type="submit" variant="primary" style={styles.submitButton} >
+            <Button type="submit" variant="primary" style={styles.submitButton}>
               Prendre Rendez-vous
             </Button>
           </Form>
