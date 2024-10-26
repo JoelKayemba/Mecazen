@@ -1,15 +1,16 @@
-import React, { useState , useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import { useSelector , useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid'; // Importation d'uuid
 import { fetchReparations } from '../../redux/Actions/reparationAction';
 import { fetchMechanics } from '../../redux/Actions/mechanicAction';
-import { addToHistorique } from '../../redux/Actions/historiqueAction';
-import {addToRendezVous}   from '../../redux/Actions/rendezVousAction';
+import { addToRendezVous  } from '../../redux/Actions/rendezVousAction';
+
 function PriseRendezVous() {
   const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedVehicle, setSelectedVehicle] = useState('');
+  const [selectedVehicle, setSelectedVehicle] = useState({});
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
   const [selectedReparation, setSelectedReparation] = useState('');
   const [selectedMechanic, setSelectedMechanic] = useState('');
@@ -18,42 +19,44 @@ function PriseRendezVous() {
   // Récupération des véhicules et des modes de paiement depuis Redux
   const vehicules = useSelector((state) => state.vehicule.vehicules);
   const paymentMethods = useSelector((state) => state.paiement.paymentMethods);
-  const reparations = useSelector((state) => state.reparation.reparations); // Réparations disponibles
-  const mechanics = useSelector((state) => state.mechanic.mechanics); // Mécaniciens disponibles
-  const mechanicError = useSelector((state) => state.mechanic.error); // Gestion des erreurs
+  const reparations = useSelector((state) => state.reparation.reparations); 
+  const mechanics = useSelector((state) => state.mechanic.mechanics);
+  const mechanicError = useSelector((state) => state.mechanic.error);
+
+  // Récupération de l’utilisateur connecté
+  const user = useSelector((state) => state.inscription.user || state.auth.user);
+
   const dispatch = useDispatch();
 
-   // Charger les réparations quand le composant est monté
-   useEffect(() => {
+  // Charger les réparations et les mécaniciens
+  useEffect(() => {
     dispatch(fetchReparations());
     dispatch(fetchMechanics());
   }, [dispatch]);
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
+  const handleDateChange = (date) => setSelectedDate(date);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (selectedDate && selectedVehicle && selectedPaymentMethod && selectedReparation && selectedMechanic && description) {
       const reservation = {
+        id: uuidv4(), // Génère un identifiant unique
+        name: user?.username,
+        email: user?.email,
+        phone: user?.phone,
         date: selectedDate.toLocaleDateString(),
-        vehicle: selectedVehicle,
+        vehicle: selectedVehicle, // Envoie l'objet véhicule complet
         reparation: selectedReparation,
         mechanic: selectedMechanic,
-        description: description,
+        description,
         paymentMethod: selectedPaymentMethod,
       };
 
-      // Ajouter la réservation à l'historique
-      dispatch(addToHistorique(reservation));
-      // Ajouter la réservation à l'historique des rendezVous
-      dispatch(addToRendezVous(reservation));
-      
-      alert('Réservation effectuée avec succès');
     
-      
+      dispatch(addToRendezVous(reservation)); 
+
+      alert('Réservation effectuée avec succès');
     } else {
       alert('Veuillez remplir tous les champs');
     }
@@ -65,47 +68,55 @@ function PriseRendezVous() {
         <Col>
           <h2 style={styles.header}>Prendre un Rendez-vous</h2>
           <Form onSubmit={handleSubmit} style={styles.form}>
+            {/* Formulaire pour sélectionner le véhicule */}
             <Form.Group controlId="formVehicle">
               <Form.Label>Sélectionnez votre véhicule</Form.Label>
               {vehicules.length > 0 ? (
-                <Form.Control
+               <Form.Control
                   as="select"
-                  value={selectedVehicle}
-                  onChange={(e) => setSelectedVehicle(e.target.value)}
+                  value={selectedVehicle?.id || ''}
+                  onChange={(e) => {
+                    const vehicle = vehicules.find(v => v.id.toString() === e.target.value); // Conversion en string si nécessaire
+                    if (vehicle) {
+                      setSelectedVehicle(vehicle); // Assurez-vous que l'objet complet est défini
+                    }
+                  }}
                 >
                   <option value="">Choisir un véhicule</option>
                   {vehicules.map((vehicule) => (
-                    <option key={vehicule.id} value={vehicule.model}>
+                    <option key={vehicule.id} value={vehicule.id.toString()}>
                       {vehicule.brand} {vehicule.model} ({vehicule.year})
+                    </option>
+                  ))}
+             </Form.Control>
+             
+              ) : (
+                <p style={{ color: 'red' }}>Pas de véhicule ajouté. Veuillez ajouter un véhicule dans Gestion de véhicule.</p>
+              )}
+            </Form.Group>
+
+            {/* Formulaire pour sélectionner le mode de paiement */}
+            <Form.Group controlId="formPayment">
+              <Form.Label>Sélectionnez un mode de paiement</Form.Label>
+              {paymentMethods.length > 0 ? (
+                <Form.Control
+                  as="select"
+                  value={selectedPaymentMethod}
+                  onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                >
+                  <option value="">Choisir un mode de paiement</option>
+                  {paymentMethods.map((method) => (
+                    <option key={method.id} value={method.id}>
+                      {method.cardName} - {method.cardNumber} (Expire: {method.expiryDate})
                     </option>
                   ))}
                 </Form.Control>
               ) : (
-                <p style={{color:'red'}}>Pas de véhicule ajouté. Vueillez ajouter un vehicule dans Gestion de vehicule</p>
+                <p style={{ color: 'red' }}>Pas de mode de paiement ajouté. Veuillez ajouter un mode de paiement dans Paiements.</p>
               )}
             </Form.Group>
 
-            <Form.Group controlId="formPayment">
-            <Form.Label>Sélectionnez un mode de paiement</Form.Label>
-            {paymentMethods.length > 0 ? (
-              <Form.Control
-                as="select"
-                value={selectedPaymentMethod}
-                onChange={(e) => setSelectedPaymentMethod(e.target.value)}
-              >
-                <option value="">Choisir un mode de paiement</option>
-                {paymentMethods.map((method) => (
-                  <option key={method.id} value={method.id}>
-                    {method.cardName} - {method.cardNumber} (Expire: {method.expiryDate})
-                  </option>
-                ))}
-              </Form.Control>
-            ) : (
-              <p style={{color:'red'}}>Pas de mode de paiement ajouté. Veuillez ajouter un mode de paiement dans Paiements</p>
-            )}
-          </Form.Group>
-
-            {/* Sélection de réparation */}
+            {/* Formulaire pour sélectionner la réparation */}
             <Form.Group controlId="formReparation">
               <Form.Label>Sélectionnez une réparation</Form.Label>
               {reparations.length > 0 ? (
@@ -113,13 +124,13 @@ function PriseRendezVous() {
                   as="select"
                   onChange={(e) => {
                     const selectedRep = reparations.find(rep => rep.title === e.target.value);
-                    setSelectedReparation(selectedRep); // Sélectionne l'objet réparation complet
+                    setSelectedReparation(selectedRep);
                   }}
                 >
                   <option value="">Choisir une réparation</option>
                   {reparations.map((reparation, index) => (
                     <option key={index} value={reparation.title}>
-                      {reparation.title} - {reparation.price} €
+                      {reparation.title} 
                     </option>
                   ))}
                 </Form.Control>
@@ -128,8 +139,8 @@ function PriseRendezVous() {
               )}
             </Form.Group>
 
-             {/* Sélection de mécanicien */}
-             <Form.Group controlId="formMechanic">
+            {/* Formulaire pour sélectionner le mécanicien */}
+            <Form.Group controlId="formMechanic">
               <Form.Label>Sélectionnez un mécanicien</Form.Label>
               {mechanicError ? (
                 <p>Erreur : {mechanicError}</p>
@@ -151,7 +162,6 @@ function PriseRendezVous() {
               )}
             </Form.Group>
 
-            {/* Champ de description */}
             <Form.Group controlId="formDescription">
               <Form.Label>Description</Form.Label>
               <Form.Control
@@ -164,7 +174,7 @@ function PriseRendezVous() {
             </Form.Group>
 
             <Form.Group controlId="formDate">
-              <Form.Label>Choisir une date pour le rendez-vous</Form.Label><br/>
+              <Form.Label>Choisir une date pour le rendez-vous</Form.Label><br />
               <DatePicker
                 selected={selectedDate}
                 onChange={handleDateChange}
@@ -175,7 +185,7 @@ function PriseRendezVous() {
               />
             </Form.Group>
 
-            <Button type="submit" variant="primary" style={styles.submitButton}>
+            <Button type="submit" variant="primary" style={styles.submitButton} >
               Prendre Rendez-vous
             </Button>
           </Form>

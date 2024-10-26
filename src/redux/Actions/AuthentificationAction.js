@@ -1,5 +1,9 @@
 import axios from 'axios';
 import { connexionURL } from '../../services/dummyJsonApi';
+
+export const LOGOUT_USER = 'LOGOUT_USER';
+
+
 const mechanicUser = [
   {username: "emilys",password: "emilyspass"},
   {username: "michaelw", password: "michaelwpass"},
@@ -32,4 +36,11 @@ export const loginUser = (userData) => async (dispatch) => {
         : error.message,
     });
   }
+};
+
+
+export const logoutUser = () => (dispatch) => {
+  dispatch({
+    type: LOGOUT_USER,
+  });
 };

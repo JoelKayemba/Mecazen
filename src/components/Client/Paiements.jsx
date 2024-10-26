@@ -1,4 +1,3 @@
-// Paiements.js
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, Button, Table, Modal, Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,10 +8,15 @@ import { addPaymentMethod, editPaymentMethod, deletePaymentMethod } from '../../
 function Paiements() {
   const dispatch = useDispatch();
   const paymentMethods = useSelector((state) => state.paiement.paymentMethods);
+  const user = useSelector((state) => state.inscription?.user || state.auth?.user); // Récupération de l'utilisateur connecté
+  
   const [showModal, setShowModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState({ cardName: '', cardNumber: '', expiryDate: '', cvc: '' });
+
+  // Affiche uniquement les méthodes de paiement liées à l'utilisateur actuel
+  const userPaymentMethods = paymentMethods.filter((method) => method.userId === user?.id);
 
   const handleShowModal = (method = null) => {
     if (method) {
@@ -39,7 +43,7 @@ function Paiements() {
 
   const handleAddPayment = () => {
     const newId = paymentMethods.length + 1;
-    dispatch(addPaymentMethod({ id: newId, type: 'Carte de Crédit', ...paymentMethod }));
+    dispatch(addPaymentMethod({ id: newId, userId: user.id, type: 'Carte de Crédit', ...paymentMethod }));
     handleCloseModal();
   };
 
@@ -77,7 +81,7 @@ function Paiements() {
                   </tr>
                 </thead>
                 <tbody>
-                  {paymentMethods.map((method) => (
+                  {userPaymentMethods.map((method) => (
                     <tr key={method.id}>
                       <td>{method.id}</td>
                       <td>{method.cardName}</td>

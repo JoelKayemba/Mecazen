@@ -1,59 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Table, Button, Modal, Form } from 'react-bootstrap';
+import { updateRendezVous } from '../../redux/Actions/rendezVousAction';
+import { addFacture } from '../../redux/Actions/factureAction';
 
 function ProchainsRendezVous() {
-  const [rendezVous, setRendezVous] = useState([]);
+  const dispatch = useDispatch();
+  const rendezVous = useSelector((state) => state.rendezVous.rendezVous);
+  const user = useSelector((state) => state.auth.user);
+
   const [showModal, setShowModal] = useState(false);
   const [selectedRendezVous, setSelectedRendezVous] = useState(null);
   const [isConfirming, setIsConfirming] = useState(true);
-  const [formDetails, setFormDetails] = useState({ reason: '', duration: '', cost: '' });
+  const [formDetails, setFormDetails] = useState({ reason: '', duration: '', price: '' });
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 
-  useEffect(() => {
-    axios.get('https://dummyjson.com/users') // Remplacez par votre API réelle
-      .then((response) => {
-        const vehicles = [
-          'Toyota Corolla 2015',
-          'Renault Clio 2018',
-          'Peugeot 308 2017',
-          'Ford Fiesta 2019',
-          'Volkswagen Golf 2020',
-          'Honda Civic 2016',
-          'BMW Série 3 2018',
-          'Audi A4 2019',
-        ];
-        
-        const appointments = response.data.users.map((user, index) => {
-          const baseDate = new Date();
-          const appointmentDate = new Date(baseDate.setDate(baseDate.getDate() + index));
-
-          const randomHour = Math.floor(Math.random() * 9) + 8;
-          const randomMinute = Math.floor(Math.random() * 60);
-          const randomVehicle = vehicles[Math.floor(Math.random() * vehicles.length)]; // Sélection aléatoire de véhicule
-
-          return {
-            id: user.id,
-            client: `${user.firstName} ${user.lastName}`,
-            email: user.email,
-            phone: user.phone,
-            vehicle: randomVehicle,
-            date: appointmentDate.toLocaleDateString('fr-FR'),
-            time: `${String(randomHour).padStart(2, '0')}:${String(randomMinute).padStart(2, '0')}`,
-            status: 'En attente',
-          };
-        });
-        setRendezVous(appointments);
-      })
-      .catch((error) => {
-        console.error('Erreur lors de la récupération des données:', error);
-      });
-  }, []);
+  const fullName = `${user.firstName} ${user.lastName}`;
+  const filteredRendezVous = rendezVous.filter(rdv => rdv.mechanic === fullName);
 
   const handleShowModal = (rdv, confirming) => {
     setSelectedRendezVous(rdv);
     setIsConfirming(confirming);
-    setFormDetails({ reason: '', duration: '', cost: '' });
+    setFormDetails({ reason: '', duration: '', price: '' });
     setShowModal(true);
   };
 
@@ -82,36 +50,29 @@ function ProchainsRendezVous() {
       ...selectedRendezVous,
       status: isConfirming ? 'Confirmé' : 'Refusé',
       reason: formDetails.reason,
+      price: formDetails.price,
       duration: formDetails.duration,
-      cost: formDetails.cost,
     };
-    setRendezVous(rendezVous.map(rdv => (rdv.id === selectedRendezVous.id ? updatedRdv : rdv)));
+
+    dispatch(updateRendezVous(updatedRdv.id, updatedRdv));
+
+    if (isConfirming) {
+      const factureData = {
+        ...updatedRdv,
+        factureDate: new Date().toLocaleDateString(),
+      };
+      dispatch(addFacture(factureData));
+    }
+
     handleCloseModal();
   };
 
   const styles = {
-    container: {
-      padding: '20px',
-      border: '1px solid #ddd',
-      borderRadius: '8px',
-      backgroundColor: '#f9f9f9',
-      margin: '40px',
-    },
-    header: {
-      marginBottom: '15px',
-      color: '#333',
-    },
-    table: {
-      marginBottom: '20px',
-    },
-    modalTitle: {
-      fontWeight: 'bold',
-      fontSize: '1.2rem',
-      color: '#333',
-    },
-    buttonDetails: {
-      marginRight: '10px',
-    },
+    container: { padding: '20px', border: '1px solid #ddd', borderRadius: '8px', backgroundColor: '#f9f9f9', margin: '40px' },
+    header: { marginBottom: '15px', color: '#333' },
+    table: { marginBottom: '20px' },
+    modalTitle: { fontWeight: 'bold', fontSize: '1.2rem', color: '#333' },
+    buttonDetails: { marginRight: '10px' },
   };
 
   return (
@@ -121,20 +82,20 @@ function ProchainsRendezVous() {
         <thead>
           <tr>
             <th>Date</th>
-            <th>Heure</th>
             <th>Client</th>
             <th>Véhicule</th>
+            <th>Réparation</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {rendezVous.map((rdv) => (
+          {filteredRendezVous.map((rdv) => (
             <tr key={rdv.id}>
               <td>{rdv.date}</td>
-              <td>{rdv.time}</td>
-              <td>{rdv.client}</td>
-              <td>{rdv.vehicle}</td>
+              <td>{rdv.name}</td>
+              <td>{rdv.vehicle ? `${rdv.vehicle.brand} ${rdv.vehicle.model} (${rdv.vehicle.year})` : 'Aucune info'}</td>
+              <td>{rdv.reparation?.title}</td>
               <td>{rdv.status}</td>
               <td>
                 <Button variant="info" style={styles.buttonDetails} onClick={() => handleShowDetails(rdv)}>Détails</Button>
@@ -150,7 +111,6 @@ function ProchainsRendezVous() {
         </tbody>
       </Table>
 
-      {/* Modale pour confirmer ou refuser */}
       {selectedRendezVous && (
         <Modal show={showModal} onHide={handleCloseModal}>
           <Modal.Header closeButton>
@@ -173,13 +133,13 @@ function ProchainsRendezVous() {
                     />
                   </Form.Group>
                   <Form.Group>
-                    <Form.Label>Coût estimé (€)</Form.Label>
+                    <Form.Label>Prix ($)</Form.Label>
                     <Form.Control
                       type="number"
-                      name="cost"
-                      value={formDetails.cost}
+                      name="price"
+                      value={formDetails.price}
                       onChange={handleInputChange}
-                      placeholder="Coût en euros"
+                      placeholder="Prix"
                     />
                   </Form.Group>
                 </>
@@ -206,19 +166,27 @@ function ProchainsRendezVous() {
         </Modal>
       )}
 
-      {/* Modale pour afficher les détails du client */}
       {selectedRendezVous && (
         <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
           <Modal.Header closeButton>
             <Modal.Title style={styles.modalTitle}>Détails du Client</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p><strong>Nom du Client :</strong> {selectedRendezVous.client}</p>
+            <p><strong>Nom du Client :</strong> {selectedRendezVous.name}</p>
             <p><strong>Email :</strong> {selectedRendezVous.email}</p>
             <p><strong>Téléphone :</strong> {selectedRendezVous.phone}</p>
-            <p><strong>Véhicule :</strong> {selectedRendezVous.vehicle}</p>
-            <p><strong>Date :</strong> {selectedRendezVous.date}</p>
-            <p><strong>Heure :</strong> {selectedRendezVous.time}</p>
+
+            <h5>Informations Véhicule</h5>
+            {selectedRendezVous.vehicle ? (
+              <>
+                <p><strong>Modèle :</strong> {selectedRendezVous.vehicle.model}</p>
+                <p><strong>Marque :</strong> {selectedRendezVous.vehicle.brand}</p>
+                <p><strong>Année :</strong> {selectedRendezVous.vehicle.year}</p>
+                <p><strong>Kilométrage :</strong> {selectedRendezVous.vehicle.mileage}</p>
+              </>
+            ) : (
+              <p>Aucune information de véhicule disponible</p>
+            )}
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleCloseDetailsModal}>Fermer</Button>

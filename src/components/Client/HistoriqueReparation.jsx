@@ -3,15 +3,21 @@ import { useSelector } from 'react-redux';
 import { Container, Table } from 'react-bootstrap';
 
 function HistoriqueReparation() {
-  // Récupérer l'historique des réservations depuis Redux
-  const historique = useSelector((state) => state.historique.historique);
+  const rendezVous = useSelector((state) => state.rendezVous.rendezVous);
+
+  const user = useSelector((state) => state.inscription?.user || state.auth?.user);
+
+  const userRendezVous = rendezVous.filter((reservation) => reservation.name === user?.username);
+
+  console.log('User RendezVous:', userRendezVous);
+
+  const showReasonColumn = userRendezVous.some((reservation) => reservation.status === 'Refusé' && reservation.reason);
 
   return (
     <Container style={styles.container}>
       <h2 style={styles.header}>Historique des Réparations</h2>
       
-      {/* Vérifier s'il y a des réservations dans l'historique */}
-      {historique.length > 0 ? (
+      {userRendezVous.length > 0 ? (
         <Table striped bordered hover style={styles.table}>
           <thead>
             <tr>
@@ -21,24 +27,25 @@ function HistoriqueReparation() {
               <th>Mécanicien</th>
               <th>Description</th>
               <th>Mode de Paiement</th>
-              <th>Prix</th>
+              <th>Status</th>
+              {showReasonColumn && <th>Raison</th>}
             </tr>
           </thead>
           <tbody>
-          {historique.map((reservation, index) => (
-            <tr key={index}>
-              <td>{reservation.date}</td>
-              <td>{reservation.vehicle}</td>
-              {/* Accéder au titre de la réparation */}
-              <td>{reservation.reparation?.title}</td> 
-              <td>{reservation.mechanic}</td>
-              <td>{reservation.description}</td>
-              <td>{reservation.paymentMethod}</td>
-              {/* Afficher le prix de la réparation */}
-              <td>{reservation.reparation?.price ? `${reservation.reparation.price} €` : 'N/A'}</td>
-            </tr>
-          ))}
-
+            {userRendezVous.map((reservation, index) => (
+              <tr key={index}>
+                <td>{reservation.date}</td>
+                <td>{reservation.vehicle ? `${reservation.vehicle.brand} ${reservation.vehicle.model} (${reservation.vehicle.year})` : ''}</td>
+                <td>{reservation.reparation?.title}</td>
+                <td>{reservation.mechanic}</td>
+                <td>{reservation.description}</td>
+                <td>{reservation.paymentMethod}</td>
+                <td>{reservation.status}</td>
+                {showReasonColumn && (
+                  <td>{reservation.status === 'Refusé' ? reservation.reason : ''}</td>
+                )}
+              </tr>
+            ))}
           </tbody>
         </Table>
       ) : (

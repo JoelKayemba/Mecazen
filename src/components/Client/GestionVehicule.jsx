@@ -5,7 +5,6 @@ import { faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { addVehicule, editVehicule, deleteVehicule, searchRecalls, resetRecalls } from '../../redux/Actions/vehiculeAction';
 
-// Fonction pour générer un ID incrémenté basé sur la longueur de la liste des véhicules
 const generateId = (vehicules) => vehicules.length + 1;
 
 function GestionVehicule() {
@@ -13,12 +12,16 @@ function GestionVehicule() {
   const [isEditing, setIsEditing] = useState(false);
   const [editingVehicleId, setEditingVehicleId] = useState(null);
   const [newVehicle, setNewVehicle] = useState({ model: '', brand: '', year: '', mileage: '' });
+
   const vehicules = useSelector((state) => state.vehicule.vehicules);
-  const error = useSelector((state) => state.vehicule.error)
+  const error = useSelector((state) => state.vehicule.error);
   const recalls = useSelector((state) => state.vehicule.recalls); // Récupération des rappels
+  const user = useSelector((state) => state.inscription?.user || state.auth?.user); // Récupération de l'utilisateur authentifié
   const dispatch = useDispatch();
 
-  // Ouvrir le modal pour ajout ou édition
+  // Filtrer les véhicules pour afficher uniquement ceux de l'utilisateur connecté
+  const userVehicules = vehicules.filter((vehicule) => vehicule.userId === user?.id);
+
   const handleShowModal = (vehicle = null) => {
     if (vehicle) {
       setNewVehicle(vehicle);
@@ -32,20 +35,17 @@ function GestionVehicule() {
     setShowModal(true);
   };
 
-  // Fermer le modal
   const handleCloseModal = () => {
     setShowModal(false);
     setNewVehicle({ model: '', brand: '', year: '', mileage: '' });
-    dispatch(resetRecalls()); // Réinitialiser les rappels lors de la fermeture
+    dispatch(resetRecalls());
   };
 
-  // Gérer le changement des champs du formulaire
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewVehicle({ ...newVehicle, [name]: value });
   };
 
-  // Rechercher les rappels (recalls) du véhicule
   const handleSearchRecalls = () => {
     const { brand, model, year } = newVehicle;
     if (brand && model && year) {
@@ -55,31 +55,22 @@ function GestionVehicule() {
     }
   };
 
-  // Ajouter ou éditer un véhicule avec les informations de rappel
   const handleSubmit = () => {
-    if (!newVehicle.id && !isEditing) {
-      // Générer un ID incrémenté basé sur la longueur de la liste des véhicules
-      newVehicle.id = generateId(vehicules);
-    }
-
-    // Ajouter les informations des rappels au véhicule
-    if (recalls.length > 0) {
-      const recallInfo = recalls.map((recall) => ({
+    const vehicleData = {
+      ...newVehicle,
+      userId: user?.id, // Associe l'ID de l'utilisateur au véhicule
+      id: !isEditing ? generateId(vehicules) : editingVehicleId,
+      recalls: recalls.map((recall) => ({
         component: recall.Component,
-        summary: recall.Summary
-      }));
+        summary: recall.Summary,
+      })),
+    };
 
-      // Ajouter les rappels dans les informations du véhicule
-      newVehicle.recalls = recallInfo;
-    }
-
-    // Dispatch l'ajout ou l'édition avec les détails de rappel inclus
-    dispatch(isEditing ? editVehicule(editingVehicleId, newVehicle) : addVehicule(newVehicle));
+    // Dispatch pour ajouter ou éditer le véhicule
+    dispatch(isEditing ? editVehicule(editingVehicleId, vehicleData) : addVehicule(vehicleData));
 
     // Fermer le modal et réinitialiser les rappels
-    setShowModal(false);
-    setNewVehicle({ model: '', brand: '', year: '', mileage: '' });
-    dispatch(resetRecalls()); // Réinitialiser les rappels après l'ajout ou la modification
+    handleCloseModal();
   };
 
   return (
@@ -112,7 +103,7 @@ function GestionVehicule() {
                   </tr>
                 </thead>
                 <tbody>
-                  {vehicules && vehicules.map((vehicle) => (
+                  {userVehicules.map((vehicle) => (
                     <tr key={vehicle.id}>
                       <td>{vehicle.id}</td>
                       <td>{vehicle.model}</td>
@@ -184,7 +175,6 @@ function GestionVehicule() {
               />
             </Form.Group>
 
-            {/* Bouton pour rechercher les rappels */}
             <Button 
               variant="info" 
               onClick={handleSearchRecalls}
@@ -196,7 +186,6 @@ function GestionVehicule() {
               <p style={{color:'red'}}>Vehicule non trouvé.</p>
             )}
 
-            {/* Affichage des rappels si disponibles */}
             {recalls.length > 0 && (
               <div style={styles.recalls}>
                 <h5>Rappels du véhicule</h5>

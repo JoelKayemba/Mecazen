@@ -1,49 +1,42 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { Container, Button } from 'react-bootstrap';
 import jsPDF from 'jspdf';
 
 function Factures() {
-  const historique = useSelector((state) => state.historique.historique); // Récupération de l'historique
-  const user = useSelector((state) => {
-    if (state.inscription && state.inscription.user) {
-      return state.inscription.user;
-    }
-    if (state.auth && state.auth.user) {
-      return state.auth.user;
-    }
-    return null;
-  });
+  const factures = useSelector((state) => state.facture.factures);
+  const user = useSelector((state) => state.inscription?.user || state.auth?.user);
 
-  // Fonction pour télécharger la facture en PDF
+  const userFactures = factures.filter(facture => facture.name === user?.username);
+
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
 
     doc.text('Facture MecaZen', 10, 10);
     doc.text(`Date : ${new Date().toLocaleDateString()}`, 10, 20);
     doc.text(`Client : ${user ? user.username : 'Nom non disponible'}`, 10, 30);
-    doc.text(`Numero de telephone : ${user ? user.phone : 'Numero non disponible'}`, 10, 40);
-    
-    
-    let yOffset = 50; // Déplacement vertical initial pour les détails des réparations
+    doc.text(`Numéro de téléphone : ${user ? user.phone : 'Numéro non disponible'}`, 10, 40);
+
+    let yOffset = 50;
     doc.text('Détails de la réparation', 10, yOffset);
-    
-    // Génération du tableau des réparations
-    historique.forEach((reservation, index) => {
+
+    userFactures.forEach((facture, index) => {
+      const vehicle = facture.vehicle
+        ? `${facture.vehicle.brand || 'Marque inconnue'} ${facture.vehicle.model || 'Modèle inconnu'} (${facture.vehicle.year || 'Année inconnue'})`
+        : 'Aucune info véhicule';
+
       yOffset += 10;
       doc.text(
-        `Date: ${reservation.date} | Véhicule: ${reservation.vehicle} | Réparation: ${reservation.reparation?.title} | Mécanicien: ${reservation.mechanic} | Prix: ${reservation.reparation?.price ? `${reservation.reparation.price} €` : 'N/A'}`,
+        `Date: ${facture.date} | Véhicule: ${vehicle} | Réparation: ${facture.reparation?.title || 'N/A'} | Mécanicien: ${facture.mechanic} | Durée: ${facture.duration || 'N/A'} | Prix: ${facture.price ? `${facture.price} €` : 'N/A'}`,
         10,
         yOffset
       );
     });
 
-    // Calcul et affichage du total
-    const total = historique.reduce((total, reservation) => total + (parseInt(reservation.reparation?.price) || 0), 0);
+    const total = userFactures.reduce((total, facture) => total + (parseFloat(facture.price) || 0), 0).toFixed(2);
     yOffset += 20;
     doc.text(`Total : ${total} €`, 10, yOffset);
 
-    // Téléchargement du fichier PDF
     doc.save('facture.pdf');
   };
 
@@ -51,15 +44,14 @@ function Factures() {
     <Container style={styles.container}>
       <h2 style={styles.header}>Votre Facture</h2>
 
-      {historique.length > 0 ? (
+      {userFactures.length > 0 ? (
         <>
           <div style={styles.facture}>
             <h3>Facture Professionnelle</h3>
             <p>Date : {new Date().toLocaleDateString()}</p>
             <h5>Client</h5>
             <p>Nom du client : {user ? user.username : 'Nom non disponible'}</p>
-            <p>Numero de telephone : {user ? user.phone : 'Numero de telephone non disponible'}</p>
-            
+            <p>Numéro de téléphone : {user ? user.phone : 'Numéro de téléphone non disponible'}</p>
 
             <h5>Détails de la réparation</h5>
             <table style={styles.table}>
@@ -69,21 +61,23 @@ function Factures() {
                   <th>Véhicule</th>
                   <th>Réparation</th>
                   <th>Mécanicien</th>
+                  <th>Durée</th>
                   <th>Description</th>
                   <th>Mode de Paiement</th>
                   <th>Prix</th>
                 </tr>
               </thead>
               <tbody>
-                {historique.map((reservation, index) => (
+                {userFactures.map((facture, index) => (
                   <tr key={index}>
-                    <td>{reservation.date}</td>
-                    <td>{reservation.vehicle}</td>
-                    <td>{reservation.reparation?.title}</td>
-                    <td>{reservation.mechanic}</td>
-                    <td>{reservation.description}</td>
-                    <td>{reservation.paymentMethod}</td>
-                    <td>{reservation.reparation?.price ? `${reservation.reparation.price} €` : 'N/A'}</td>
+                    <td>{facture.date}</td>
+                    <td>{facture.vehicle ? `${facture.vehicle.brand || 'Marque inconnue'} ${facture.vehicle.model || 'Modèle inconnu'} (${facture.vehicle.year || 'Année inconnue'})` : 'Aucune info'}</td>
+                    <td>{facture.reparation?.title || 'N/A'}</td>
+                    <td>{facture.mechanic}</td>
+                    <td>{facture.duration || 'N/A'}</td>
+                    <td>{facture.description}</td>
+                    <td>{facture.paymentMethod}</td>
+                    <td>{facture.price ? `${facture.price} €` : 'N/A'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -91,17 +85,16 @@ function Factures() {
 
             <h5>Total</h5>
             <p>
-              {historique.reduce((total, reservation) => total + (parseInt(reservation.reparation?.price) || 0), 0)} €
+              {userFactures.reduce((total, facture) => total + (parseFloat(facture.price) || 0), 0).toFixed(2)} €
             </p>
           </div>
 
-          {/* Bouton pour télécharger la facture */}
           <Button onClick={handleDownloadPDF} variant="primary" style={styles.button}>
             Télécharger la Facture en PDF
           </Button>
         </>
       ) : (
-        <p>Aucune réservation trouvée pour générer une facture.</p>
+        <p>Aucune facture trouvée pour générer une facture.</p>
       )}
     </Container>
   );

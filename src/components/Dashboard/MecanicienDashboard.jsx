@@ -5,7 +5,7 @@ import { faChartLine, faCalendarAlt, faUsers, faFileAlt, faHistory } from '@fort
 import MonPlanning from '../Mecanicien/GestionRendezVous'; // Composant pour afficher le planning des rendez-vous
 import MesClients from '../Mecanicien/Clients'; // Composant pour afficher la liste des clients
 import Documents from '../Mecanicien/Documents'; // Composant pour la gestion des documents
-import Historique from '../Mecanicien/Statistiques'; // Composant pour afficher l'historique
+import Statistique from '../Mecanicien/Statistiques'; // Composant pour afficher l'historique
 import TableauDeBordMecanicien from './TableauDeBordMecanicien'; // Composant pour le tableau de bord principal
 
 function MecanicienDashboard() {
@@ -16,7 +16,7 @@ function MecanicienDashboard() {
     { name: 'Mon Planning', icon: faCalendarAlt, component: 'MonPlanning' },
     { name: 'Mes Clients', icon: faUsers, component: 'MesClients' },
     { name: 'Documents', icon: faFileAlt, component: 'Documents' },
-    { name: 'Historique', icon: faHistory, component: 'Historique' },
+    { name: 'Statistique', icon: faHistory, component: 'Statistique' },
   ];
 
   const renderComponent = () => {
@@ -29,8 +29,8 @@ function MecanicienDashboard() {
         return <MesClients />;
       case 'Documents':
         return <Documents />;
-      case 'Historique':
-        return <Historique />;
+      case 'Statistique':
+        return <Statistique />;
       default:
         return <TableauDeBordMecanicien />;
     }
@@ -46,7 +46,7 @@ function MecanicienDashboard() {
         }))}
       />
       <div style={{ marginLeft: '250px', width: '100%', padding: '20px' }}>
-        <h1>{activeComponent}</h1> {/* Affiche le titre de la section active */}
+        
         {renderComponent()}
       </div>
     </div>

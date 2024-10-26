@@ -1,29 +1,29 @@
 import React, { useState } from 'react';
 import { Table, Button, Modal } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 
 function Documents() {
-  const documents = [
-    { nom: 'Facture 001', date: '22/10/2024', montant: '150€', status: 'Payé', description: 'Facture pour réparation de la Toyota Corolla', fichier: 'facture001.pdf', client: 'Jean Dupont' },
-    { nom: 'Facture 002', date: '23/10/2024', montant: '200€', status: 'En attente', description: 'Facture pour réparation de la Renault Clio', fichier: 'facture002.pdf', client: 'Marie Curie' },
-    { nom: 'Rapport de Réparation', date: '24/10/2024', montant: 'N/A', status: 'Complété', description: 'Rapport complet de la réparation effectuée', fichier: 'rapport_reparation.pdf', client: 'Paul Martin' },
-  ];
+  // Utiliser Redux pour récupérer les factures et l'utilisateur actuellement connecté
+  const documents = useSelector((state) => state.facture.factures);
+  const user = useSelector((state) => state.auth.user); // Assurez-vous que l'utilisateur actuel est bien dans le state auth
 
   const [showModal, setShowModal] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
 
-  // Afficher la modale des détails du document
+  // Filtrer les factures pour celles qui appartiennent au mécanicien actuel
+  const fullName = `${user.firstName} ${user.lastName}`;
+  const filteredDocuments = documents.filter((doc) => doc.mechanic === fullName);
+
   const handleShowDetails = (doc) => {
     setSelectedDocument(doc);
     setShowModal(true);
   };
 
-  // Fermer la modale
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedDocument(null);
   };
 
-  // Styles en ligne
   const styles = {
     container: {
       padding: '20px',
@@ -63,12 +63,12 @@ function Documents() {
           </tr>
         </thead>
         <tbody>
-          {documents.map((doc, index) => (
+          {filteredDocuments.map((doc, index) => (
             <tr key={index}>
               <td>{doc.nom}</td>
-              <td>{doc.date}</td>
-              <td>{doc.client}</td>
-              <td>{doc.montant}</td>
+              <td>{doc.factureDate}</td>
+              <td>{doc.name}</td>
+              <td>{doc.price} $</td>
               <td>{doc.status}</td>
               <td>
                 <Button variant="info" style={styles.buttonDetails} onClick={() => handleShowDetails(doc)}>Détails</Button>
@@ -78,7 +78,6 @@ function Documents() {
         </tbody>
       </Table>
 
-      {/* Modale pour afficher les détails du document */}
       {selectedDocument && (
         <Modal show={showModal} onHide={handleCloseModal}>
           <Modal.Header closeButton>
@@ -86,9 +85,9 @@ function Documents() {
           </Modal.Header>
           <Modal.Body>
             <p><strong>Nom :</strong> {selectedDocument.nom}</p>
-            <p><strong>Date :</strong> {selectedDocument.date}</p>
-            <p><strong>Client :</strong> {selectedDocument.client}</p>
-            <p><strong>Montant :</strong> {selectedDocument.montant}</p>
+            <p><strong>Date :</strong> {selectedDocument.factureDate}</p>
+            <p><strong>Client :</strong> {selectedDocument.name}</p>
+            <p><strong>Montant :</strong> {selectedDocument.price} $</p>
             <p><strong>Status :</strong> {selectedDocument.status}</p>
             <p><strong>Description :</strong> {selectedDocument.description}</p>
           </Modal.Body>
