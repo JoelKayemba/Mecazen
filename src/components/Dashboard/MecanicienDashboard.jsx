@@ -2,11 +2,11 @@
 import React, { useState } from 'react';
 import Sidebar from '../Common/Sidebar';
 import { faChartLine, faCalendarAlt, faUsers, faFileAlt, faHistory } from '@fortawesome/free-solid-svg-icons';
-import MonPlanning from '../Mecanicien/GestionRendezVous'; // Composant pour afficher le planning des rendez-vous
-import MesClients from '../Mecanicien/Clients'; // Composant pour afficher la liste des clients
-import Documents from '../Mecanicien/Documents'; // Composant pour la gestion des documents
-import Statistique from '../Mecanicien/Statistiques'; // Composant pour afficher l'historique
-import TableauDeBordMecanicien from './TableauDeBordMecanicien'; // Composant pour le tableau de bord principal
+import MonPlanning from '../Mecanicien/GestionRendezVous'; 
+import MesClients from '../Mecanicien/Clients'
+import Documents from '../Mecanicien/Documents'; 
+import Statistique from '../Mecanicien/Statistiques';
+import TableauDeBordMecanicien from './TableauDeBordMecanicien'; 
 
 function MecanicienDashboard() {
   const [activeComponent, setActiveComponent] = useState('Tableau de bord');
