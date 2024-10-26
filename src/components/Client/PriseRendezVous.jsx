@@ -49,6 +49,7 @@ function PriseRendezVous() {
         vehicle: selectedVehicle,
         reparation: selectedReparation,
         mechanic: selectedMechanic,
+        price:'0',
         description,
         paymentMethod: selectedPaymentMethod,
       };

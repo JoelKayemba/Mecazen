@@ -6,6 +6,7 @@ function Documents() {
   // Utiliser Redux pour récupérer les factures et l'utilisateur actuellement connecté
   const documents = useSelector((state) => state.facture.factures);
   const user = useSelector((state) => state.auth.user); // Assurez-vous que l'utilisateur actuel est bien dans le state auth
+  
 
   const [showModal, setShowModal] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
@@ -82,7 +83,7 @@ function Documents() {
             <Modal.Title style={styles.modalTitle}>Détails du Document</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p><strong>Nom :</strong> {selectedDocument.nom}</p>
+            <p><strong>Nom du mecanicien:</strong> {user.lastName} {user.firstName}</p>
             <p><strong>Date :</strong> {selectedDocument.factureDate}</p>
             <p><strong>Client :</strong> {selectedDocument.name}</p>
             <p><strong>Montant :</strong> {selectedDocument.price} $</p>
