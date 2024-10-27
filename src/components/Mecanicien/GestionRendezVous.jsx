@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Table, Button, Modal, Form } from 'react-bootstrap';
-import { updateRendezVous } from '../../redux/Actions/rendezVousAction';
+import { Container, Table, Button, Modal, Form } from 'react-bootstrap';
+import { updateRendezVous, validateModification } from '../../redux/Actions/rendezVousAction';
 import { addFacture } from '../../redux/Actions/factureAction';
 
 function ProchainsRendezVous() {
@@ -10,19 +10,17 @@ function ProchainsRendezVous() {
   const user = useSelector((state) => state.auth.user);
 
   const [showModal, setShowModal] = useState(false);
+  const [showModificationModal, setShowModificationModal] = useState(false);
   const [selectedRendezVous, setSelectedRendezVous] = useState(null);
-  const [isConfirming, setIsConfirming] = useState(true);
   const [formDetails, setFormDetails] = useState({ reason: '', duration: '', price: '' });
-  const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   const fullName = `${user.firstName} ${user.lastName}`;
-  const filteredRendezVous = rendezVous.filter(rdv => rdv.mechanic === fullName);
+  const filteredRendezVous = rendezVous.filter((rdv) => rdv.mechanic === fullName);
 
-  const handleShowModal = (rdv, confirming) => {
+  const handleShowModal = (rdv, isConfirming) => {
     setSelectedRendezVous(rdv);
-    setIsConfirming(confirming);
     setFormDetails({ reason: '', duration: '', price: '' });
-    setShowModal(true);
+    setShowModal(isConfirming);
   };
 
   const handleCloseModal = () => {
@@ -30,13 +28,13 @@ function ProchainsRendezVous() {
     setSelectedRendezVous(null);
   };
 
-  const handleShowDetails = (rdv) => {
+  const handleShowModificationModal = (rdv) => {
     setSelectedRendezVous(rdv);
-    setShowDetailsModal(true);
+    setShowModificationModal(true);
   };
 
-  const handleCloseDetailsModal = () => {
-    setShowDetailsModal(false);
+  const handleCloseModificationModal = () => {
+    setShowModificationModal(false);
     setSelectedRendezVous(null);
   };
 
@@ -45,26 +43,42 @@ function ProchainsRendezVous() {
     setFormDetails({ ...formDetails, [name]: value });
   };
 
-  const handleSaveDecision = () => {
-    const updatedRdv = {
-      ...selectedRendezVous,
-      status: isConfirming ? 'Confirmé' : 'Refusé',
-      reason: formDetails.reason,
-      price: formDetails.price,
-      duration: formDetails.duration,
-    };
-
-    dispatch(updateRendezVous(updatedRdv.id, updatedRdv));
-
-    if (isConfirming) {
-      const factureData = {
-        ...updatedRdv,
-        factureDate: new Date().toLocaleDateString(),
-      };
-      dispatch(addFacture(factureData));
+  const handleAcceptModification = () => {
+    if (selectedRendezVous) {
+      dispatch(validateModification(selectedRendezVous.id, true));
+      handleCloseModificationModal();
     }
+  };
 
-    handleCloseModal();
+  const handleRefuseModification = () => {
+    if (selectedRendezVous) {
+      dispatch(validateModification(selectedRendezVous.id, false, formDetails.reason));
+      handleCloseModificationModal();
+    }
+  };
+
+  const handleSaveDecision = (isConfirming) => {
+    if (selectedRendezVous) {
+      const updatedRdv = {
+        ...selectedRendezVous,
+        status: isConfirming ? 'Confirmé' : 'Refusé',
+        price: formDetails.price,
+        duration: formDetails.duration,
+        reason: !isConfirming ? formDetails.reason : undefined,
+      };
+
+      dispatch(updateRendezVous(updatedRdv.id, updatedRdv));
+
+      if (isConfirming) {
+        const factureData = {
+          ...updatedRdv,
+          factureDate: new Date().toLocaleDateString(),
+        };
+        dispatch(addFacture(factureData));
+      }
+
+      handleCloseModal();
+    }
   };
 
   const styles = {
@@ -86,6 +100,7 @@ function ProchainsRendezVous() {
             <th>Véhicule</th>
             <th>Réparation</th>
             <th>Status</th>
+            <th>Modification</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -97,12 +112,19 @@ function ProchainsRendezVous() {
               <td>{rdv.vehicle ? `${rdv.vehicle.brand} ${rdv.vehicle.model} (${rdv.vehicle.year})` : 'Aucune info'}</td>
               <td>{rdv.reparation?.title}</td>
               <td>{rdv.status}</td>
+              <td>{rdv.modificationStatus || 'Pas de modification'}</td>
               <td>
-                <Button variant="info" style={styles.buttonDetails} onClick={() => handleShowDetails(rdv)}>Détails</Button>
                 {rdv.status === 'En attente' && (
                   <>
                     <Button variant="success" onClick={() => handleShowModal(rdv, true)}>Confirmer</Button>{' '}
                     <Button variant="danger" onClick={() => handleShowModal(rdv, false)}>Refuser</Button>
+                  </>
+                )}
+                {rdv.status === 'Confirmé' && rdv.modificationStatus === 'Modification en attente' && (
+                  <>
+                    <Button variant="info" style={{ marginRight: '5px' }} onClick={() => handleShowModificationModal(rdv)}>
+                      Voir Modification
+                    </Button>
                   </>
                 )}
               </td>
@@ -111,16 +133,17 @@ function ProchainsRendezVous() {
         </tbody>
       </Table>
 
+      {/* Modal for accepting or refusing a rendezvous */}
       {selectedRendezVous && (
         <Modal show={showModal} onHide={handleCloseModal}>
           <Modal.Header closeButton>
             <Modal.Title style={styles.modalTitle}>
-              {isConfirming ? 'Confirmer le Rendez-vous' : 'Refuser le Rendez-vous'}
+              {showModal ? 'Confirmer le Rendez-vous' : 'Refuser le Rendez-vous'}
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
-              {isConfirming ? (
+              {showModal ? (
                 <>
                   <Form.Group>
                     <Form.Label>Durée estimée (heures)</Form.Label>
@@ -133,7 +156,7 @@ function ProchainsRendezVous() {
                     />
                   </Form.Group>
                   <Form.Group>
-                    <Form.Label>Prix ($)</Form.Label>
+                    <Form.Label>Prix (€)</Form.Label>
                     <Form.Control
                       type="number"
                       name="price"
@@ -159,37 +182,37 @@ function ProchainsRendezVous() {
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleCloseModal}>Annuler</Button>
-            <Button variant="primary" onClick={handleSaveDecision}>
-              {isConfirming ? 'Confirmer' : 'Refuser'}
+            <Button variant="primary" onClick={() => handleSaveDecision(showModal)}>
+              {showModal ? 'Confirmer' : 'Refuser'}
             </Button>
           </Modal.Footer>
         </Modal>
       )}
 
+      {/* Modal for viewing modification details */}
       {selectedRendezVous && (
-        <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
+        <Modal show={showModificationModal} onHide={handleCloseModificationModal}>
           <Modal.Header closeButton>
-            <Modal.Title style={styles.modalTitle}>Détails du Client</Modal.Title>
+            <Modal.Title style={styles.modalTitle}>Détails de la Modification</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p><strong>Nom du Client :</strong> {selectedRendezVous.name}</p>
-            <p><strong>Email :</strong> {selectedRendezVous.email}</p>
-            <p><strong>Téléphone :</strong> {selectedRendezVous.phone}</p>
-
-            <h5>Informations Véhicule</h5>
+            <p><strong>Date Modifiée :</strong> {selectedRendezVous.date || 'Non spécifiée'}</p>
             {selectedRendezVous.vehicle ? (
               <>
-                <p><strong>Modèle :</strong> {selectedRendezVous.vehicle.model}</p>
-                <p><strong>Marque :</strong> {selectedRendezVous.vehicle.brand}</p>
-                <p><strong>Année :</strong> {selectedRendezVous.vehicle.year}</p>
+                <p><strong>Modèle du Véhicule :</strong> {selectedRendezVous.vehicle.model}</p>
+                <p><strong>Marque du Véhicule :</strong> {selectedRendezVous.vehicle.brand}</p>
+                <p><strong>Année du Véhicule :</strong> {selectedRendezVous.vehicle.year}</p>
                 <p><strong>Kilométrage :</strong> {selectedRendezVous.vehicle.mileage}</p>
               </>
             ) : (
-              <p>Aucune information de véhicule disponible</p>
+              <p>Aucune information de véhicule modifiée</p>
             )}
+            <p><strong>Description Modifiée :</strong> {selectedRendezVous.description || 'Non spécifiée'}</p>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseDetailsModal}>Fermer</Button>
+            <Button variant="secondary" onClick={handleCloseModificationModal}>Annuler</Button>
+            <Button variant="success" onClick={handleAcceptModification}>Accepter Modification</Button>
+            <Button variant="danger" onClick={handleRefuseModification}>Refuser Modification</Button>
           </Modal.Footer>
         </Modal>
       )}

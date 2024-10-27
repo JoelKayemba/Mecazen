@@ -1,17 +1,64 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { Container, Table } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Container, Table, Button, Modal, Form } from 'react-bootstrap';
+import { modifyRendezVous, annulerRendezVous } from '../../redux/Actions/rendezVousAction';
 
 function HistoriqueReparation() {
+  const dispatch = useDispatch();
   const rendezVous = useSelector((state) => state.rendezVous.rendezVous);
-
   const user = useSelector((state) => state.inscription?.user || state.auth?.user);
+
+  const [showModal, setShowModal] = useState(false);
+  const [selectedRendezVous, setSelectedRendezVous] = useState(null);
+  const [modificationDetails, setModificationDetails] = useState({
+    vehicle: { brand: '', model: '', year: '', mileage: '' },
+    date: '',
+    description: ''
+  });
 
   const userRendezVous = rendezVous.filter((reservation) => reservation.name === user?.username);
 
-  console.log('User RendezVous:', userRendezVous);
+  const handleOpenModal = (rdv) => {
+    setSelectedRendezVous(rdv);
+    setModificationDetails({
+      vehicle: rdv.vehicle || { brand: '', model: '', year: '', mileage: '' },
+      date: rdv.date,
+      description: rdv.description
+    });
+    setShowModal(true);
+  };
 
-  const showReasonColumn = userRendezVous.some((reservation) => reservation.status === 'Refusé' && reservation.reason);
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedRendezVous(null);
+  };
+
+  const handleModificationSubmit = () => {
+    const modifiedRendezVous = {
+      ...selectedRendezVous,
+      vehicle: modificationDetails.vehicle,
+      date: modificationDetails.date,
+      description: modificationDetails.description,
+      modificationStatus: 'Modification en attente'
+    };
+
+    dispatch(modifyRendezVous(modifiedRendezVous.id, modifiedRendezVous));
+    handleCloseModal();
+  };
+
+  const handleAnnulerRendezVous = (id) => {
+    dispatch(annulerRendezVous(id));
+  };
+
+  const handleVehicleChange = (field, value) => {
+    setModificationDetails({
+      ...modificationDetails,
+      vehicle: {
+        ...modificationDetails.vehicle,
+        [field]: value
+      }
+    });
+  };
 
   return (
     <Container style={styles.container}>
@@ -28,7 +75,8 @@ function HistoriqueReparation() {
               <th>Description</th>
               <th>Mode de Paiement</th>
               <th>Status</th>
-              {showReasonColumn && <th>Raison</th>}
+              <th>Modification Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -41,9 +89,16 @@ function HistoriqueReparation() {
                 <td>{reservation.description}</td>
                 <td>{reservation.paymentMethod}</td>
                 <td>{reservation.status}</td>
-                {showReasonColumn && (
-                  <td>{reservation.status === 'Refusé' ? reservation.reason : ''}</td>
-                )}
+                <td>{reservation.modificationStatus || 'Aucune modification'}</td>
+                <td>
+                  <Button variant="info" onClick={() => handleOpenModal(reservation)}>Modifier</Button>
+                  <p></p>
+                  {reservation.status === 'En attente' && (
+                    <Button variant="danger" onClick={() => handleAnnulerRendezVous(reservation.id)} style={{ marginLeft: '10px' }}>
+                      Annuler
+                    </Button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -51,6 +106,76 @@ function HistoriqueReparation() {
       ) : (
         <p>Aucune réservation trouvée dans l'historique.</p>
       )}
+
+      {/* Modal pour modifier un rendez-vous */}
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Modifier le Rendez-vous</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <h5>Informations Véhicule</h5>
+            <Form.Group controlId="modificationVehicleBrand">
+              <Form.Label>Marque</Form.Label>
+              <Form.Control
+                type="text"
+                value={modificationDetails.vehicle.brand}
+                onChange={(e) => handleVehicleChange('brand', e.target.value)}
+                placeholder="Marque du véhicule"
+              />
+            </Form.Group>
+            <Form.Group controlId="modificationVehicleModel">
+              <Form.Label>Modèle</Form.Label>
+              <Form.Control
+                type="text"
+                value={modificationDetails.vehicle.model}
+                onChange={(e) => handleVehicleChange('model', e.target.value)}
+                placeholder="Modèle du véhicule"
+              />
+            </Form.Group>
+            <Form.Group controlId="modificationVehicleYear">
+              <Form.Label>Année</Form.Label>
+              <Form.Control
+                type="text"
+                value={modificationDetails.vehicle.year}
+                onChange={(e) => handleVehicleChange('year', e.target.value)}
+                placeholder="Année du véhicule"
+              />
+            </Form.Group>
+            <Form.Group controlId="modificationVehicleMileage">
+              <Form.Label>Kilométrage</Form.Label>
+              <Form.Control
+                type="text"
+                value={modificationDetails.vehicle.mileage}
+                onChange={(e) => handleVehicleChange('mileage', e.target.value)}
+                placeholder="Kilométrage du véhicule"
+              />
+            </Form.Group>
+            <Form.Group controlId="modificationDate">
+              <Form.Label>Date</Form.Label>
+              <Form.Control
+                type="text"
+                value={modificationDetails.date}
+                onChange={(e) => setModificationDetails({ ...modificationDetails, date: e.target.value })}
+                placeholder="Entrez la date"
+              />
+            </Form.Group>
+            <Form.Group controlId="modificationDescription">
+              <Form.Label>Description</Form.Label>
+              <Form.Control
+                as="textarea"
+                value={modificationDetails.description}
+                onChange={(e) => setModificationDetails({ ...modificationDetails, description: e.target.value })}
+                placeholder="Décrivez les modifications"
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>Annuler</Button>
+          <Button variant="primary" onClick={handleModificationSubmit}>Enregistrer</Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 }
