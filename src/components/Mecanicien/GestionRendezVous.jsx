@@ -10,6 +10,7 @@ function ProchainsRendezVous() {
   const user = useSelector((state) => state.auth.user);
 
   const [showModal, setShowModal] = useState(false);
+  const [showRefuseModal, setShowRefuseModal] = useState(false);
   const [showModificationModal, setShowModificationModal] = useState(false);
   const [selectedRendezVous, setSelectedRendezVous] = useState(null);
   const [formDetails, setFormDetails] = useState({ reason: '', duration: '', price: '' });
@@ -17,14 +18,25 @@ function ProchainsRendezVous() {
   const fullName = `${user.firstName} ${user.lastName}`;
   const filteredRendezVous = rendezVous.filter((rdv) => rdv.mechanic === fullName);
 
-  const handleShowModal = (rdv, isConfirming) => {
+  const handleShowModal = (rdv) => {
     setSelectedRendezVous(rdv);
     setFormDetails({ reason: '', duration: '', price: '' });
-    setShowModal(isConfirming);
+    setShowModal(true);
+  };
+
+  const handleShowRefuseModal = (rdv) => {
+    setSelectedRendezVous(rdv);
+    setFormDetails({ reason: '' });
+    setShowRefuseModal(true);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
+    setSelectedRendezVous(null);
+  };
+
+  const handleCloseRefuseModal = () => {
+    setShowRefuseModal(false);
     setSelectedRendezVous(null);
   };
 
@@ -62,7 +74,7 @@ function ProchainsRendezVous() {
       const updatedRdv = {
         ...selectedRendezVous,
         status: isConfirming ? 'Confirmé' : 'Refusé',
-        price: formDetails.price,
+        price: formDetails.price? formDetails.price : '0',
         duration: formDetails.duration,
         reason: !isConfirming ? formDetails.reason : undefined,
       };
@@ -78,6 +90,7 @@ function ProchainsRendezVous() {
       }
 
       handleCloseModal();
+      handleCloseRefuseModal();
     }
   };
 
@@ -116,8 +129,8 @@ function ProchainsRendezVous() {
               <td>
                 {rdv.status === 'En attente' && (
                   <>
-                    <Button variant="success" onClick={() => handleShowModal(rdv, true)}>Confirmer</Button>{' '}
-                    <Button variant="danger" onClick={() => handleShowModal(rdv, false)}>Refuser</Button>
+                    <Button variant="success" onClick={() => handleShowModal(rdv)}>Confirmer</Button>{' '}
+                    <Button variant="danger" onClick={() => handleShowRefuseModal(rdv)}>Refuser</Button>
                   </>
                 )}
                 {rdv.status === 'Confirmé' && rdv.modificationStatus === 'Modification en attente' && (
@@ -133,58 +146,66 @@ function ProchainsRendezVous() {
         </tbody>
       </Table>
 
-      {/* Modal for accepting or refusing a rendezvous */}
+      {/* Modal for accepting a rendezvous */}
       {selectedRendezVous && (
         <Modal show={showModal} onHide={handleCloseModal}>
           <Modal.Header closeButton>
-            <Modal.Title style={styles.modalTitle}>
-              {showModal ? 'Confirmer le Rendez-vous' : 'Refuser le Rendez-vous'}
-            </Modal.Title>
+            <Modal.Title style={styles.modalTitle}>Confirmer le Rendez-vous</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
-              {showModal ? (
-                <>
-                  <Form.Group>
-                    <Form.Label>Durée estimée (heures)</Form.Label>
-                    <Form.Control
-                      type="number"
-                      name="duration"
-                      value={formDetails.duration}
-                      onChange={handleInputChange}
-                      placeholder="Durée en heures"
-                    />
-                  </Form.Group>
-                  <Form.Group>
-                    <Form.Label>Prix (€)</Form.Label>
-                    <Form.Control
-                      type="number"
-                      name="price"
-                      value={formDetails.price}
-                      onChange={handleInputChange}
-                      placeholder="Prix"
-                    />
-                  </Form.Group>
-                </>
-              ) : (
-                <Form.Group>
-                  <Form.Label>Raison du refus</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    name="reason"
-                    value={formDetails.reason}
-                    onChange={handleInputChange}
-                    placeholder="Spécifiez la raison du refus"
-                  />
-                </Form.Group>
-              )}
+              <Form.Group>
+                <Form.Label>Durée estimée (heures)</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="duration"
+                  value={formDetails.duration}
+                  onChange={handleInputChange}
+                  placeholder="Durée en heures"
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Prix (€)</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="price"
+                  value={formDetails.price}
+                  onChange={handleInputChange}
+                  placeholder="Prix"
+                />
+              </Form.Group>
             </Form>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleCloseModal}>Annuler</Button>
-            <Button variant="primary" onClick={() => handleSaveDecision(showModal)}>
-              {showModal ? 'Confirmer' : 'Refuser'}
-            </Button>
+            <Button variant="primary" onClick={() => handleSaveDecision(true)}>Confirmer</Button>
+          </Modal.Footer>
+        </Modal>
+      )}
+
+      {/* Modal for refusing a rendezvous */}
+      {selectedRendezVous && (
+        <Modal show={showRefuseModal} onHide={handleCloseRefuseModal}>
+          <Modal.Header closeButton>
+            <Modal.Title style={styles.modalTitle}>Refuser le Rendez-vous</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group>
+                <Form.Label>Raison du refus</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  name="reason"
+                  value={formDetails.reason}
+                  onChange={handleInputChange}
+                  placeholder="Spécifiez la raison du refus"
+                />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseRefuseModal}>Annuler</Button>
+            <Button variant="danger" onClick={() => handleSaveDecision(false)}>Refuser</Button>
           </Modal.Footer>
         </Modal>
       )}

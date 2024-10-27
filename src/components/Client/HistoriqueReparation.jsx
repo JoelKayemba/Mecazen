@@ -75,6 +75,7 @@ function HistoriqueReparation() {
               <th>Description</th>
               <th>Mode de Paiement</th>
               <th>Status</th>
+              <th>Raison</th>
               <th>Modification Status</th>
               <th>Actions</th>
             </tr>
@@ -88,10 +89,12 @@ function HistoriqueReparation() {
                 <td>{reservation.mechanic}</td>
                 <td>{reservation.description}</td>
                 <td>{reservation.paymentMethod}</td>
+                <td>{reservation.reason || 'Aucune raison fournie'}</td>
                 <td>{reservation.status}</td>
                 <td>{reservation.modificationStatus || 'Aucune modification'}</td>
                 <td>
-                  <Button variant="info" onClick={() => handleOpenModal(reservation)}>Modifier</Button>
+                  {reservation.status !="Refusé" && ( <Button variant="info" onClick={() => handleOpenModal(reservation)}>Modifier</Button>)}
+                 
                   <p></p>
                   {reservation.status === 'En attente' && (
                     <Button variant="danger" onClick={() => handleAnnulerRendezVous(reservation.id)} style={{ marginLeft: '10px' }}>
