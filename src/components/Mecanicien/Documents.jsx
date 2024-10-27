@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Table, Button, Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
+import jsPDF from 'jspdf';
 
 function Documents() {
   // Utiliser Redux pour récupérer les factures et l'utilisateur actuellement connecté
   const documents = useSelector((state) => state.facture.factures);
   const user = useSelector((state) => state.auth.user); // Assurez-vous que l'utilisateur actuel est bien dans le state auth
-  
 
   const [showModal, setShowModal] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
@@ -23,6 +23,25 @@ function Documents() {
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedDocument(null);
+  };
+
+  // Fonction pour gérer le téléchargement du PDF
+  const handleDownload = () => {
+    if (selectedDocument) {
+      const doc = new jsPDF();
+      doc.setFontSize(16);
+      doc.text("Détails du Document", 20, 20);
+      doc.setFontSize(12);
+      doc.text(`Nom du mécanicien: ${user.lastName} ${user.firstName}`, 20, 40);
+      doc.text(`Date: ${selectedDocument.factureDate}`, 20, 50);
+      doc.text(`Client: ${selectedDocument.name}`, 20, 60);
+      doc.text(`Montant: ${selectedDocument.price} $`, 20, 70);
+      doc.text(`Status: ${selectedDocument.status}`, 20, 80);
+      doc.text(`Description: ${selectedDocument.description}`, 20, 90);
+
+      // Générer le fichier PDF et le télécharger
+      doc.save(`Document_${selectedDocument.name}_${selectedDocument.factureDate}.pdf`);
+    }
   };
 
   const styles = {
@@ -83,7 +102,7 @@ function Documents() {
             <Modal.Title style={styles.modalTitle}>Détails du Document</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p><strong>Nom du mecanicien:</strong> {user.lastName} {user.firstName}</p>
+            <p><strong>Nom du mécanicien:</strong> {user.lastName} {user.firstName}</p>
             <p><strong>Date :</strong> {selectedDocument.factureDate}</p>
             <p><strong>Client :</strong> {selectedDocument.name}</p>
             <p><strong>Montant :</strong> {selectedDocument.price} $</p>
@@ -92,7 +111,7 @@ function Documents() {
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleCloseModal}>Fermer</Button>
-            <Button variant="primary" href={`/documents/${selectedDocument.fichier}`} download>
+            <Button variant="primary" onClick={handleDownload}>
               Télécharger
             </Button>
           </Modal.Footer>

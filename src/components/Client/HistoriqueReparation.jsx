@@ -74,8 +74,8 @@ function HistoriqueReparation() {
               <th>Mécanicien</th>
               <th>Description</th>
               <th>Mode de Paiement</th>
-              <th>Status</th>
               <th>Raison</th>
+              <th>Status</th>
               <th>Modification Status</th>
               <th>Actions</th>
             </tr>
@@ -89,7 +89,7 @@ function HistoriqueReparation() {
                 <td>{reservation.mechanic}</td>
                 <td>{reservation.description}</td>
                 <td>{reservation.paymentMethod}</td>
-                <td>{reservation.reason || 'Aucune raison fournie'}</td>
+                <td>{reservation.reason || 'Pas de raison'}</td>
                 <td>{reservation.status}</td>
                 <td>{reservation.modificationStatus || 'Aucune modification'}</td>
                 <td>
