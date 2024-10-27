@@ -165,7 +165,7 @@ function ProchainsRendezVous() {
                 />
               </Form.Group>
               <Form.Group>
-                <Form.Label>Prix (€)</Form.Label>
+                <Form.Label>Prix ($)</Form.Label>
                 <Form.Control
                   type="number"
                   name="price"
