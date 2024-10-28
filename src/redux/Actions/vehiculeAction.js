@@ -11,7 +11,7 @@ export const SEARCH_VEHICLE_BY_VIN = 'SEARCH_VEHICLE_BY_VIN';
 
 // API URL 
 const NHTSA_RECALLS_API_URL = 'https://api.nhtsa.gov/recalls/recallsByVehicle';
-const NHTSA_VIN_API_URL = 'https://api.nhtsa.gov/complaints/vin';
+const NHTSA_VIN_API_URL = 'https://api.nhtsa.gov/complaints';
 
 // Action pour ajouter un véhicule
 export const addVehicule = (vehicule) => {
