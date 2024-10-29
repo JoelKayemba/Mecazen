@@ -19,7 +19,7 @@ function Connexion() {
 
   useEffect(() => {
     if (user) {
-      // Si la connexion est réussie, redirection vers le tableau de bord
+      // Si la connexion est réussie, redirection vers la apage d'accueil
       navigate('/');  
     }
   }, [user, navigate]);

@@ -1,4 +1,4 @@
-import { ADD_VEHICULE, EDIT_VEHICULE, DELETE_VEHICULE, SEARCH_RECALLS, RESET_RECALLS , ERROR_SEARCH } from '../Actions/vehiculeAction';
+import { ADD_VEHICULE, EDIT_VEHICULE, DELETE_VEHICULE, SEARCH_RECALLS, RESET_RECALLS , ERROR_SEARCH , SEARCH_VEHICLE_BY_VIN} from '../Actions/vehiculeAction';
 
 const initialState = {
   vehicules: [],
@@ -25,6 +25,14 @@ const vehiculeReducer = (state = initialState, action) => {
         ...state,
         vehicules: state.vehicules.filter((vehicule) => vehicule.id !== action.payload),
       };
+
+    case SEARCH_VEHICLE_BY_VIN:
+      return {
+            ...state,
+            vinData: action.payload,
+            error: null,
+            };
+
     case SEARCH_RECALLS:
       return {
         ...state,

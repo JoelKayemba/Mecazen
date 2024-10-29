@@ -1,5 +1,5 @@
 // rendezVousReducer.js
-import { ADD_TO_RENDEZ_VOUS, UPDATE_RENDEZ_VOUS } from '../Actions/rendezVousAction';
+import { ADD_TO_RENDEZ_VOUS, UPDATE_RENDEZ_VOUS, MODIFY_RENDEZ_VOUS, VALIDATE_MODIFICATION , ANNULER_RENDEZ_VOUS} from '../Actions/rendezVousAction';
 
 const etatInitial = {
   rendezVous: [],
@@ -30,6 +30,37 @@ const rendezVousReducer = (state = etatInitial, action) => {
             : rdv
         ),
       };
+
+      case MODIFY_RENDEZ_VOUS:
+        return {
+          ...state,
+          rendezVous: state.rendezVous.map((rdv) =>
+            rdv.id === action.payload.id
+              ? { ...rdv, ...action.payload }
+              : rdv
+          ),
+        };
+  
+        case VALIDATE_MODIFICATION:
+            return {
+                ...state,
+                rendezVous: state.rendezVous.map((rdv) =>
+                    rdv.id === action.payload.id
+                        ? {
+                              ...rdv,
+                              modificationStatus: action.payload.modificationStatus,
+                              reason: action.payload.reason,
+                          }
+                        : rdv
+                ),
+            };
+
+            case ANNULER_RENDEZ_VOUS:
+                return {
+                    ...state,
+                    rendezVous: state.rendezVous.filter((rdv) => rdv.id !== action.payload.id),
+                };
+  
 
     default:
       return state;

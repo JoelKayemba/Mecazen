@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Table, Modal, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { addVehicule, editVehicule, deleteVehicule, searchRecalls, resetRecalls } from '../../redux/Actions/vehiculeAction';
+import { addVehicule, editVehicule, deleteVehicule, searchRecalls, resetRecalls, searchVehicleByVin } from '../../redux/Actions/vehiculeAction';
 
 const generateId = (vehicules) => vehicules.length + 1;
 
@@ -11,16 +11,28 @@ function GestionVehicule() {
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingVehicleId, setEditingVehicleId] = useState(null);
+  const [vin, setVin] = useState('');
   const [newVehicle, setNewVehicle] = useState({ model: '', brand: '', year: '', mileage: '' });
 
   const vehicules = useSelector((state) => state.vehicule.vehicules);
+  const vinData = useSelector((state) => state.vehicule.vinData);
   const error = useSelector((state) => state.vehicule.error);
-  const recalls = useSelector((state) => state.vehicule.recalls); // Récupération des rappels
-  const user = useSelector((state) => state.inscription?.user || state.auth?.user); // Récupération de l'utilisateur authentifié
+  const recalls = useSelector((state) => state.vehicule.recalls);
+  const user = useSelector((state) => state.inscription?.user || state.auth?.user);
   const dispatch = useDispatch();
 
-  // Filtrer les véhicules pour afficher uniquement ceux de l'utilisateur connecté
   const userVehicules = vehicules.filter((vehicule) => vehicule.userId === user?.id);
+
+  useEffect(() => {
+    if (vinData) {
+      setNewVehicle({
+        model: vinData.Model || '',
+        brand: vinData.Make || '',
+        year: vinData.ModelYear || '',
+        mileage: newVehicle.mileage,
+      });
+    }
+  }, [vinData]);
 
   const handleShowModal = (vehicle = null) => {
     if (vehicle) {
@@ -38,6 +50,7 @@ function GestionVehicule() {
   const handleCloseModal = () => {
     setShowModal(false);
     setNewVehicle({ model: '', brand: '', year: '', mileage: '' });
+    setVin('');
     dispatch(resetRecalls());
   };
 
@@ -46,7 +59,19 @@ function GestionVehicule() {
     setNewVehicle({ ...newVehicle, [name]: value });
   };
 
-  const handleSearchRecalls = () => {
+  const handleVinChange = (e) => {
+    setVin(e.target.value);
+  };
+
+  const handleSearchByVin = () => {
+    if (vin) {
+      dispatch(searchVehicleByVin(vin));
+    } else {
+      alert('Veuillez entrer un VIN valide');
+    }
+  };
+
+  const handleSearchByModel = () => {
     const { brand, model, year } = newVehicle;
     if (brand && model && year) {
       dispatch(searchRecalls(brand, model, year));
@@ -58,7 +83,7 @@ function GestionVehicule() {
   const handleSubmit = () => {
     const vehicleData = {
       ...newVehicle,
-      userId: user?.id, // Associe l'ID de l'utilisateur au véhicule
+      userId: user?.id,
       id: !isEditing ? generateId(vehicules) : editingVehicleId,
       recalls: recalls.map((recall) => ({
         component: recall.Component,
@@ -66,10 +91,7 @@ function GestionVehicule() {
       })),
     };
 
-    // Dispatch pour ajouter ou éditer le véhicule
     dispatch(isEditing ? editVehicule(editingVehicleId, vehicleData) : addVehicule(vehicleData));
-
-    // Fermer le modal et réinitialiser les rappels
     handleCloseModal();
   };
 
@@ -77,7 +99,6 @@ function GestionVehicule() {
     <Container fluid style={styles.container}>
       <h2 style={styles.header}>Gestion de Véhicules</h2>
 
-      {/* Section d'actions */}
       <Row className="mb-4" style={styles.actionRow}>
         <Col>
           <Button variant="primary" style={styles.addButton} onClick={() => handleShowModal()}>
@@ -86,7 +107,6 @@ function GestionVehicule() {
         </Col>
       </Row>
 
-      {/* Liste des véhicules */}
       <Row>
         <Col>
           <Card style={styles.card}>
@@ -137,7 +157,6 @@ function GestionVehicule() {
         </Col>
       </Row>
 
-      {/* Modal d'ajout ou d'édition de véhicule */}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>{isEditing ? 'Modifier le Véhicule' : 'Ajouter un Nouveau Véhicule'}</Modal.Title>
@@ -145,15 +164,25 @@ function GestionVehicule() {
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>Modèle</Form.Label>
+              <Form.Label>VIN</Form.Label>
               <Form.Control
                 type="text"
-                name="model"
-                value={newVehicle.model}
-                onChange={handleChange}
-                placeholder="Entrez le modèle"
+                value={vin}
+                onChange={handleVinChange}
+                placeholder="Entrez le VIN"
               />
+              <Button 
+                variant="info" 
+                onClick={handleSearchByVin}
+                style={styles.searchButton}
+              >
+                Rechercher par VIN
+              </Button>
             </Form.Group>
+            
+            <hr />
+
+            <h5>Recherche par Modèle, Marque et Année</h5>
             <Form.Group className="mb-3">
               <Form.Label>Marque</Form.Label>
               <Form.Control
@@ -162,6 +191,16 @@ function GestionVehicule() {
                 value={newVehicle.brand}
                 onChange={handleChange}
                 placeholder="Entrez la marque"
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Modèle</Form.Label>
+              <Form.Control
+                type="text"
+                name="model"
+                value={newVehicle.model}
+                onChange={handleChange}
+                placeholder="Entrez le modèle"
               />
             </Form.Group>
             <Form.Group className="mb-3">
@@ -177,13 +216,14 @@ function GestionVehicule() {
 
             <Button 
               variant="info" 
-              onClick={handleSearchRecalls}
+              onClick={handleSearchByModel}
               style={styles.searchButton}
             >
-              Rechercher les informations
+              Rechercher par Modèle, Marque et Année
             </Button>
+
             {error && (
-              <p style={{color:'red'}}>Vehicule non trouvé.</p>
+              <p style={{color:'red'}}>Erreur lors de la recherche : {error}</p>
             )}
 
             {recalls.length > 0 && (
