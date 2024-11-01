@@ -46,7 +46,7 @@ const vehiculeReducer = (state = initialState, action) => {
       };
 
       case ERROR_SEARCH:
-        return { ...state, error: 'erreur de recherche' };
+        return { ...state, error: 'Aucune information trouvée.' };
     default:
       return state;
   }
