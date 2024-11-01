@@ -14,6 +14,7 @@ function GestionVehicule() {
   const [vin, setVin] = useState('');
   const [newVehicle, setNewVehicle] = useState({ model: '', brand: '', year: '', mileage: '' });
   const [showDescription, setShowDescription] = useState(false);
+  const [noInfoFound, setNoInfoFound] = useState(false); // Nouvel état
 
   const vehicules = useSelector((state) => state.vehicule.vehicules);
   const vinData = useSelector((state) => state.vehicule.vinData);
@@ -27,7 +28,11 @@ function GestionVehicule() {
 
   useEffect(() => {
     if (vinData) {
-      setShowDescription(true); // Afficher la description après la recherche VIN
+      setShowDescription(!!description); // Afficher la description si elle existe
+      setNoInfoFound(!description); // Aucune information trouvée si la description est vide
+    } else {
+      setShowDescription(false);
+      setNoInfoFound(true); // Aucune information trouvée
     }
   }, [vinData]);
 
@@ -42,7 +47,8 @@ function GestionVehicule() {
       setEditingVehicleId(null);
     }
     setShowModal(true);
-    setShowDescription(false); // Cacher la description par défaut
+    setShowDescription(false);
+    setNoInfoFound(false); // Réinitialiser l'état
   };
 
   const handleCloseModal = () => {
@@ -237,6 +243,10 @@ function GestionVehicule() {
                   ))}
                 </ul>
               </div>
+            )}
+            
+            {noInfoFound && (
+              <p style={{color: 'red'}}>Aucune information trouvée.</p>
             )}
             
             {showDescription && description && (
