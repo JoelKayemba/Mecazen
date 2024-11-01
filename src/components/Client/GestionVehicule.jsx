@@ -13,6 +13,7 @@ function GestionVehicule() {
   const [editingVehicleId, setEditingVehicleId] = useState(null);
   const [vin, setVin] = useState('');
   const [newVehicle, setNewVehicle] = useState({ model: '', brand: '', year: '', mileage: '' });
+  const [showDescription, setShowDescription] = useState(false);
 
   const vehicules = useSelector((state) => state.vehicule.vehicules);
   const vinData = useSelector((state) => state.vehicule.vinData);
@@ -22,15 +23,11 @@ function GestionVehicule() {
   const dispatch = useDispatch();
 
   const userVehicules = vehicules.filter((vehicule) => vehicule.userId === user?.id);
+  const description = vinData ? vinData.description : '';
 
   useEffect(() => {
     if (vinData) {
-      setNewVehicle({
-        model: vinData.Model || '',
-        brand: vinData.Make || '',
-        year: vinData.ModelYear || '',
-        mileage: newVehicle.mileage,
-      });
+      setShowDescription(true); // Afficher la description après la recherche VIN
     }
   }, [vinData]);
 
@@ -45,6 +42,7 @@ function GestionVehicule() {
       setEditingVehicleId(null);
     }
     setShowModal(true);
+    setShowDescription(false); // Cacher la description par défaut
   };
 
   const handleCloseModal = () => {
@@ -89,6 +87,7 @@ function GestionVehicule() {
         component: recall.Component,
         summary: recall.Summary,
       })),
+      description: showDescription ? description : '', 
     };
 
     dispatch(isEditing ? editVehicule(editingVehicleId, vehicleData) : addVehicule(vehicleData));
@@ -237,6 +236,13 @@ function GestionVehicule() {
                     </li>
                   ))}
                 </ul>
+              </div>
+            )}
+            
+            {showDescription && description && (
+              <div style={styles.recalls}>
+                <h5>Description</h5>
+                <p>{description}</p>
               </div>
             )}
 

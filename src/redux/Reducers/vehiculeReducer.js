@@ -2,6 +2,7 @@ import { ADD_VEHICULE, EDIT_VEHICULE, DELETE_VEHICULE, SEARCH_RECALLS, RESET_REC
 
 const initialState = {
   vehicules: [],
+  vinData:[],
   recalls: [], // Stockage des rappels
   error: null,
 };

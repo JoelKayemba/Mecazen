@@ -76,7 +76,9 @@ export const resetRecalls = () => {
 export const searchVehicleByVin = (vin) => async (dispatch) => {
   try {
     const response = await axios.get(`${NHTSA_VIN_API_URL}?vin=${vin}`);
-    const vehicleData = response.data.Results[0];
+    const vehicleData = response.data.results[0];
+    console.log(vehicleData);
+   
 
     // Dispatch des résultats du VIN vers le reducer
     dispatch({
