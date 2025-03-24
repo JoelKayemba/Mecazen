@@ -74,12 +74,8 @@ Chaque fonctionnalité (connexion, véhicules, rendez-vous) dispose de son propr
 
 ---
 
-## 🌱 Prochaines évolutions envisagées  
-- Ajout d’un backend avec Express et MongoDB pour la persistance réelle des données  
-- Authentification sécurisée et rôle utilisateur avancé (Admin, Mécanicien, Client)  
-- Notifications en temps réel (Socket.io)  
 
----
+
 
 ## 🌐 Conclusion  
 > **MECAZEN**, ce n’est pas juste une application — c’est une preuve concrète qu’avec **React.js** et **Redux**, il est possible de créer des solutions puissantes et flexibles, prêtes à évoluer vers des architectures plus complexes sans réécrire tout le projet.  
